@@ -17,6 +17,9 @@ int main(int argc, char ** argv){
   SDL_Renderer* renderer = SDL_CreateRenderer(window, -1, 0);
   // TODO: Test that renderer was created successfully
 
+  //Create event handling struct
+  SDL_Event input;
+
   //Temporary until GL context is added
   // Set the draw color of renderer to green
   SDL_SetRenderDrawColor(renderer, 0, 255, 0, 255);
@@ -25,14 +28,31 @@ int main(int argc, char ** argv){
   SDL_RenderPresent(renderer);
 
   //wait used until close window hook implemented
-  SDL_Delay(3000);
+  //SDL_Delay(3000);
+
+
+  // Game loop
+  bool running = true;
+  while(running){
+    //SDL Event handling loop
+    while (SDL_PollEvent(&input) > 0){
+      // Handle SDL quit event
+      if (input.type == SDL_QUIT){
+        running = false;
+      }
+      //TODO: Do something with keys lol
+
+    };
+  };
+
+  // Escaped Game loop
 
   // On close destroy renderer
   SDL_DestroyRenderer(renderer);
   // On close also destroy window
   SDL_DestroyWindow(window);
 
-  //Close all leftover SDL systems
+  // Close all leftover SDL systems
   SDL_Quit();
 
   return 0;
