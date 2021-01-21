@@ -1,7 +1,7 @@
 # Set default options
 CC = clang++
 
-CFLAGS = -g -Wall -lSDL2 -lSDL2main
+CFLAGS = -g -Wall -lSDL2 -lSDL2main -lGLEW
 
 TARGET = Game
 SRCDIR = src/
