@@ -54,6 +54,13 @@ int main(int argc, char ** argv){
             //TODO: Do something with keys lol
 
         };
+        //Clear screen ready for next loop
+        glClearColor(0.0f,0.0f,0.0f,0.0f);
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        // TODO: Run game here lol
+        
+        SDL_GL_SwapWindow(window);
     };
 
     // Escaped Game loop
