@@ -1,75 +1,101 @@
 //#include <iostream>
 #include <GL/glew.h>
+// Make sure Glew is loaded first
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL_opengl.h>
 
-//TODO: Create Error handling class
+// TODO: Create Error handling class
 
-int main(int argc, char ** argv){
-    // Initialise SDL2
-    //TODO: Check if sdl initialised
-    SDL_Init(SDL_INIT_EVERYTHING);
+int main(int argc, char **argv) {
+  // Initialise SDL2
+  // TODO: Check if sdl initialised
+  SDL_Init(SDL_INIT_EVERYTHING);
 
-    //Make OpenGL use double buffering (Render game first then shove to output)
-    SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
+  // Make OpenGL use double buffering (Render game first then shove to output)
+  SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-    //TODO: Understand what a depth buffer is
-    SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
+  // TODO: Understand what a depth buffer is
+  SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 
-    //TODO: Discover if thid is necessary for linux and what values they need be
-    //SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
-    //SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
-    //SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
-    //SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
-    
-    // Create Window
-    SDL_Window *window =
-        SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                800, 600, SDL_WINDOW_SHOWN|SDL_WINDOW_OPENGL);
-    //TODO: Test that window was created successfully
+  // TODO: Discover if thid is necessary for linux and what values they need be
+  // SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
+  // SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
+  // SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
+  // SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
-    //Create glContext
-    SDL_GLContext glContext = SDL_GL_CreateContext(window);
-    //TODO: Test that glContext was created successfully
+  // Create Window
+  SDL_Window *window =
+      SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
+                       800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+  // TODO: Test that window was created successfully
 
-    //Initialise Glew
-    if (glewInit() != GLEW_OK){
-        //TODO: Throw an error lol
-    }
+  // Create glContext
+  SDL_GLContext glContext = SDL_GL_CreateContext(window);
+  // TODO: Test that glContext was created successfully
 
+  // Initialise Glew
+  if (glewInit() != GLEW_OK) {
+    // TODO: Throw an error lol
+  }
 
-    //Create event handling struct
-    SDL_Event input;
+  // Create event handling struct
+  SDL_Event input;
 
-    // Game loop
-    bool running = true;
-    while(running){
-        //SDL Event handling loop
-        while (SDL_PollEvent(&input) > 0){
-            // Handle SDL quit event
-            if (input.type == SDL_QUIT){
-                running = false;
-            }
-            //TODO: Do something with keys lol
+  // test triangle
+  float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
 
-        };
-        //Clear screen ready for next loop
-        glClearColor(0.0f,0.0f,0.0f,0.0f);
-        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+  // Vertex Buffer Object
+  unsigned int VBO;
+  glGenBuffers(1, &VBO);
 
-        // TODO: Run game here lol
-        
-        SDL_GL_SwapWindow(window);
+  // Bind the buffer and size it to the data provided
+  glBindBuffer(GL_ARRAY_BUFFER, VBO);
+  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+
+  // Create vertex array that will populate buffer
+  unsigned int VAO;
+  glCreateVertexArrays(1, &VAO);
+  glEnableVertexArrayAttrib(VAO, 0);
+
+  // set up vertex array atributes
+  glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
+
+  // sut up vbo for vao
+  glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(float) * 3);
+
+  // shove vertex array into buffer
+  glBindVertexArray(VAO);
+
+  // Game loop
+  bool running = true;
+  while (running) {
+    // SDL Event handling loop
+    while (SDL_PollEvent(&input) > 0) {
+      // Handle SDL quit event
+      if (input.type == SDL_QUIT) {
+        running = false;
+      }
+      // TODO: Do something with keys lol
     };
+    // Clear screen ready for next loop
+    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-    // Escaped Game loop
+    // TODO: Run game here lol
+    // Draw triangle
+    glDrawArrays(GL_TRIANGLES, 0, 3);
 
-    // On close also destroy window
-    SDL_DestroyWindow(window);
+    SDL_GL_SwapWindow(window);
+  };
 
-    // Close all leftover SDL systems
-    SDL_Quit();
+  // Escaped Game loop
 
-    return 0;
+  // On close also destroy window
+  SDL_DestroyWindow(window);
+
+  // Close all leftover SDL systems
+  SDL_Quit();
+
+  return 0;
 }

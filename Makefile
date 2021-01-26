@@ -9,6 +9,8 @@ BUILDDIR = build/
 
 all: $(TARGET)
 
-$(TARGET): $(SRCDIR)main.cpp
+$(TARGET): $(SRCDIR)main.cpp $(BUILDDIR)
 	$(CC) $(CFLAGS) -o  $(BUILDDIR)$(TARGET) $(SRCDIR)main.cpp
 
+$(BUILDDIR):
+	mkdir -p $(BUILDDIR)
