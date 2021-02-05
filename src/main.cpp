@@ -58,8 +58,18 @@ int main(int argc, char **argv) {
   // Create event handling struct
   SDL_Event input;
 
-  // test triangle
-  float vertices[] = {-0.5f, -0.5f, 0.0f, 0.5f, -0.5f, 0.0f, 0.0f, 0.5f, 0.0f};
+  // test square!
+  float vertices[] = {
+      0.5f,  0.5f,  0.0f, // top right
+      0.5f,  -0.5f, 0.0f, // bottom right
+      -0.5f, -0.5f, 0.0f, // bottom left
+      -0.5f, 0.5f,  0.0f  // top left
+  };
+  unsigned int indices[] = {
+      // note that we start from 0!
+      0, 1, 3, // first triangle
+      1, 2, 3  // second triangle
+  };
 
   // Vertex Buffer Object
   unsigned int VBO;
@@ -82,6 +92,15 @@ int main(int argc, char **argv) {
 
   // shove vertex array into buffer
   glBindVertexArray(VAO);
+
+  // Create element buffer (allows the use of indices)
+  unsigned int EBO;
+  glGenBuffers(1, &EBO);
+
+  // Bind element Buffer
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+               GL_STATIC_DRAW);
 
   // create vertex shader
   unsigned int vertexShader;
@@ -116,9 +135,6 @@ int main(int argc, char **argv) {
   // TODO: test the shader was linked
   // https://learnopengl.com/Getting-started/Hello-Triangle
 
-  // Make every shader/rendering call from this point on use our shader
-  glUseProgram(shaderProgram);
-
   // Clean up shader creation stuff from memory
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
@@ -137,10 +153,18 @@ int main(int argc, char **argv) {
     // Clear screen ready for next loop
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+    // Make every shader/rendering call from this point on use our shader
+    glUseProgram(shaderProgram);
+
+    // I think this is meant to be here but it breaks...
+    // shove vertex array into buffer
+    glBindVertexArray(VAO);
 
     // TODO: Run game here lol
     // Draw triangle
-    glDrawArrays(GL_TRIANGLES, 0, 3);
+    // glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glBindVertexArray(0);
 
     SDL_GL_SwapWindow(window);
   };
