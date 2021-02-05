@@ -1,3 +1,19 @@
+// TODO: Stop this fuckery
+const char *vertexShaderSource =
+    "#version 330 core\n"
+    "layout (location = 0) in vec3 aPos;\n"
+    "void main()\n"
+    "{\n"
+    "   gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+    "}\0";
+const char *fragmentShaderSource =
+    "#version 330 core\n"
+    "out vec4 FragColor;\n"
+    "void main()\n"
+    "{\n"
+    "   FragColor = vec4(1.0f, 0.5f, 0.2f, 1.0f);\n"
+    "}\0";
+
 //#include <iostream>
 #include <GL/glew.h>
 // Make sure Glew is loaded first
@@ -61,11 +77,51 @@ int main(int argc, char **argv) {
   // set up vertex array atributes
   glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
 
-  // sut up vbo for vao
+  // set up vbo for vao
   glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(float) * 3);
 
   // shove vertex array into buffer
   glBindVertexArray(VAO);
+
+  // create vertex shader
+  unsigned int vertexShader;
+  vertexShader = glCreateShader(GL_VERTEX_SHADER);
+  // compile vertex shader
+  glShaderSource(vertexShader, 1, &vertexShaderSource, NULL);
+  glCompileShader(vertexShader);
+  // TODO: test the shader was compiled
+  // https://learnopengl.com/Getting-started/Hello-Triangle
+
+  // create fragment shader
+  unsigned int fragmentShader;
+  fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
+  // compile fragment shader
+  glShaderSource(fragmentShader, 1, &fragmentShaderSource, NULL);
+  glCompileShader(fragmentShader);
+  // TODO: test the shader was compiled
+  // https://learnopengl.com/Getting-started/Hello-Triangle
+
+  // Tell openGL how to interpret vertex data
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  glEnableVertexAttribArray(0);
+
+  // Create the shader program
+  unsigned int shaderProgram;
+  shaderProgram = glCreateProgram();
+
+  // Attach shaders to the shader program
+  glAttachShader(shaderProgram, vertexShader);
+  glAttachShader(shaderProgram, fragmentShader);
+  glLinkProgram(shaderProgram);
+  // TODO: test the shader was linked
+  // https://learnopengl.com/Getting-started/Hello-Triangle
+
+  // Make every shader/rendering call from this point on use our shader
+  glUseProgram(shaderProgram);
+
+  // Clean up shader creation stuff from memory
+  glDeleteShader(vertexShader);
+  glDeleteShader(fragmentShader);
 
   // Game loop
   bool running = true;
