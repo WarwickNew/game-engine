@@ -24,8 +24,6 @@ const char *fragmentShaderSource =
 
 // Include error class
 #include "Error.h"
-#include <string>
-// TODO: Remove check that error class was included properly
 Error error("main");
 
 // TODO: Create Error handling class
@@ -33,7 +31,10 @@ Error error("main");
 int main(int argc, char **argv) {
   // Initialise SDL2
   // TODO: Check if sdl initialised
-  SDL_Init(SDL_INIT_EVERYTHING);
+  if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
+    error.crash("Unable to initialise SDL: ", SDL_GetError());
+    return 1;
+  }
 
   // Make OpenGL use double buffering (Render game first then shove to output)
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
