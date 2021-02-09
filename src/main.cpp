@@ -26,11 +26,8 @@ const char *fragmentShaderSource =
 #include "Error.h"
 Error error("main");
 
-// TODO: Create Error handling class
-
 int main(int argc, char **argv) {
   // Initialise SDL2
-  // TODO: Check if sdl initialised
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
     error.crash("Unable to initialise SDL: ", SDL_GetError());
     return 1;
@@ -42,17 +39,20 @@ int main(int argc, char **argv) {
   // TODO: Understand what a depth buffer is
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 
-  // TODO: Discover if thid is necessary for linux and what values they need be
+  // TODO: Discover if this is necessary for linux and what values they need be
   // SDL_GL_SetAttribute(SDL_GL_RED_SIZE, 8);
   // SDL_GL_SetAttribute(SDL_GL_GREEN_SIZE, 8);
   // SDL_GL_SetAttribute(SDL_GL_BLUE_SIZE, 8);
   // SDL_GL_SetAttribute(SDL_GL_ALPHA_SIZE, 8);
 
   // Create Window
-  SDL_Window *window =
-      SDL_CreateWindow("Game", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                       800, 600, SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
-  // TODO: Test that window was created successfully
+  SDL_Window *window = SDL_CreateWindow(PACKAGE_STRING, SDL_WINDOWPOS_UNDEFINED,
+                                        SDL_WINDOWPOS_UNDEFINED, 800, 600,
+                                        SDL_WINDOW_SHOWN | SDL_WINDOW_OPENGL);
+  if (window == NULL) {
+    error.crash("Unable to initialise SDL Window: ", SDL_GetError());
+    return 1;
+  }
 
   // Create glContext
   SDL_GLContext glContext = SDL_GL_CreateContext(window);
@@ -60,7 +60,7 @@ int main(int argc, char **argv) {
 
   // Initialise Glew
   if (glewInit() != GLEW_OK) {
-    // TODO: Throw an error lol
+    error.crash("Unable to initialise GLEW (OpenGL Extention Wrangler)");
   }
 
   // Create event handling struct
@@ -118,6 +118,13 @@ int main(int argc, char **argv) {
   glCompileShader(vertexShader);
   // TODO: test the shader was compiled
   // https://learnopengl.com/Getting-started/Hello-Triangle
+  int success;
+  char infoLog[512];
+  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    error.crash("vertex shader compilation failed", infoLog);
+  }
 
   // create fragment shader
   unsigned int fragmentShader;
@@ -127,6 +134,11 @@ int main(int argc, char **argv) {
   glCompileShader(fragmentShader);
   // TODO: test the shader was compiled
   // https://learnopengl.com/Getting-started/Hello-Triangle
+  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
+  if (!success) {
+    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
+    error.crash("fragment shader compilation failed", infoLog);
+  }
 
   // Tell openGL how to interpret vertex data
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
@@ -140,8 +152,12 @@ int main(int argc, char **argv) {
   glAttachShader(shaderProgram, vertexShader);
   glAttachShader(shaderProgram, fragmentShader);
   glLinkProgram(shaderProgram);
-  // TODO: test the shader was linked
-  // https://learnopengl.com/Getting-started/Hello-Triangle
+  // test the shader was linked
+  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
+  if (!success) {
+    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
+    error.crash("failed to create shader program", infoLog);
+  }
 
   // Clean up shader creation stuff from memory
   glDeleteShader(vertexShader);
