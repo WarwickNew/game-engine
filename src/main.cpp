@@ -8,6 +8,7 @@
 // File reader
 #include <fstream>
 #include <iostream>
+#include <string>
 
 // Include error class
 #include "Error.h"
@@ -65,6 +66,13 @@ int main(int argc, char **argv) {
   SDL_GLContext glContext = SDL_GL_CreateContext(window);
   // TODO: Test that glContext was created successfully
 
+  // Tell us the number of vertex attributes allowed in bug reports
+  //
+  int nrAttributes;
+  glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
+  error.log("Maximum num of vertex attributes supported: " +
+            std::to_string(nrAttributes));
+
   // Initialise Glew
   if (glewInit() != GLEW_OK) {
     error.crash("Unable to initialise GLEW (OpenGL Extention Wrangler)");
@@ -75,10 +83,10 @@ int main(int argc, char **argv) {
 
   // test square!
   float vertices[] = {
-      0.5f,  0.5f,  0.0f, // top right
-      0.5f,  -0.5f, 0.0f, // bottom right
-      -0.5f, -0.5f, 0.0f, // bottom left
-      -0.5f, 0.5f,  0.0f  // top left
+      // positions        // colors
+      0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
+      -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
+      0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
   };
   unsigned int indices[] = {
       // note that we start from 0!
@@ -119,9 +127,9 @@ int main(int argc, char **argv) {
 
   // Get Vertex shader src
   // https://badvertex.com/2012/11/20/how-to-load-a-glsl-shader-in-opengl-using-c.html
-  std::string vertShaderStr = readFile("vertex.glsl");
+  std::string vertShaderStr = readFile("src/vertex.glsl");
   const char *vertShaderSrc = vertShaderStr.c_str();
-  std::string fragShaderStr = readFile("fragment.glsl");
+  std::string fragShaderStr = readFile("src/fragment.glsl");
   const char *fragShaderSrc = fragShaderStr.c_str();
 
   // create vertex shader
@@ -154,9 +162,14 @@ int main(int argc, char **argv) {
     error.crash("fragment shader compilation failed", infoLog);
   }
 
-  // Tell openGL how to interpret vertex data
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void *)0);
+  // Tell openGL how to interpret shader data
+  // position attribute
+  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
+  // color attribute
+  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float),
+                        (void *)(3 * sizeof(float)));
+  glEnableVertexAttribArray(1);
 
   // Create the shader program
   unsigned int shaderProgram;
@@ -200,8 +213,8 @@ int main(int argc, char **argv) {
 
     // TODO: Run game here lol
     // Draw triangle
-    // glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    glDrawArrays(GL_TRIANGLES, 0, 3);
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     glBindVertexArray(0);
 
     SDL_GL_SwapWindow(window);
