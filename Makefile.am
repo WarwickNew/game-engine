@@ -8,6 +8,8 @@ bin_PROGRAMS = Game
 Game_SOURCES = \
 			   src/main.cpp \
 			   src/Error.h \
-			   src/Error.cpp
+			   src/Error.cpp \
+			   src/ShaderLoader.h \
+			   src/ShaderLoader.cpp
 Game_CPPFLAGS = @sdl2_CFLAGS@ @glew_CFLAGS@ @opengl_CFLAGS@
 Game_LDFLAGS = @sdl2_LIBS@ @glew_LIBS@ @opengl_LIBS@
