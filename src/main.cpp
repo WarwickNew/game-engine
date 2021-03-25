@@ -9,6 +9,8 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+// Shader
+#include "ShaderLoader.h"
 
 // Include error class
 #include "Error.h"
@@ -138,7 +140,6 @@ int main(int argc, char **argv) {
   // compile vertex shader
   glShaderSource(vertexShader, 1, &vertShaderSrc, NULL);
   glCompileShader(vertexShader);
-  // TODO: test the shader was compiled
   // https://learnopengl.com/Getting-started/Hello-Triangle
   int success;
   char infoLog[512];
@@ -154,7 +155,6 @@ int main(int argc, char **argv) {
   // compile fragment shader
   glShaderSource(fragmentShader, 1, &fragShaderSrc, NULL);
   glCompileShader(fragmentShader);
-  // TODO: test the shader was compiled
   // https://learnopengl.com/Getting-started/Hello-Triangle
   glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
   if (!success) {
@@ -190,6 +190,8 @@ int main(int argc, char **argv) {
   glDeleteShader(vertexShader);
   glDeleteShader(fragmentShader);
 
+  ShaderLoader shader("src/vertex.glsl", "src/fragment.glsl");
+
   // Game loop
   bool running = true;
   while (running) {
@@ -205,7 +207,9 @@ int main(int argc, char **argv) {
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Make every shader/rendering call from this point on use our shader
-    glUseProgram(shaderProgram);
+    // glUseProgram(shaderProgram);
+
+    shader.use();
 
     // I think this is meant to be here but it breaks...
     // shove vertex array into buffer
