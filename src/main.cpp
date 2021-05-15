@@ -83,86 +83,25 @@ int main(int argc, char **argv) {
   // Create event handling struct
   SDL_Event input;
 
-  // test square!
+  ShaderLoader shader("src/vertex.glsl", "src/fragment.glsl");
+
   float vertices[] = {
-      // positions        // colors
+      // positions         // colors
       0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, 0.0f, // bottom right
       -0.5f, -0.5f, 0.0f, 0.0f, 1.0f, 0.0f, // bottom left
       0.0f,  0.5f,  0.0f, 0.0f, 0.0f, 1.0f  // top
   };
-  unsigned int indices[] = {
-      // note that we start from 0!
-      0, 1, 3, // first triangle
-      1, 2, 3  // second triangle
-  };
 
-  // Vertex Buffer Object
-  unsigned int VBO;
+  unsigned int VBO, VAO;
+  glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
+  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and
+  // then configure vertex attributes(s).
+  glBindVertexArray(VAO);
 
-  // Bind the buffer and size it to the data provided
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
-  // Create vertex array that will populate buffer
-  unsigned int VAO;
-  glCreateVertexArrays(1, &VAO);
-  glEnableVertexArrayAttrib(VAO, 0);
-
-  // set up vertex array atributes
-  glVertexArrayAttribFormat(VAO, 0, 3, GL_FLOAT, GL_FALSE, 0);
-
-  // set up vbo for vao
-  glVertexArrayVertexBuffer(VAO, 0, VBO, 0, sizeof(float) * 3);
-
-  // shove vertex array into buffer
-  glBindVertexArray(VAO);
-
-  // Create element buffer (allows the use of indices)
-  unsigned int EBO;
-  glGenBuffers(1, &EBO);
-
-  // Bind element Buffer
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-               GL_STATIC_DRAW);
-
-  // Get Vertex shader src
-  // https://badvertex.com/2012/11/20/how-to-load-a-glsl-shader-in-opengl-using-c.html
-  std::string vertShaderStr = readFile("src/vertex.glsl");
-  const char *vertShaderSrc = vertShaderStr.c_str();
-  std::string fragShaderStr = readFile("src/fragment.glsl");
-  const char *fragShaderSrc = fragShaderStr.c_str();
-
-  // create vertex shader
-  unsigned int vertexShader;
-  vertexShader = glCreateShader(GL_VERTEX_SHADER);
-  // compile vertex shader
-  glShaderSource(vertexShader, 1, &vertShaderSrc, NULL);
-  glCompileShader(vertexShader);
-  // https://learnopengl.com/Getting-started/Hello-Triangle
-  int success;
-  char infoLog[512];
-  glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(vertexShader, 512, NULL, infoLog);
-    error.crash("vertex shader compilation failed", infoLog);
-  }
-
-  // create fragment shader
-  unsigned int fragmentShader;
-  fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-  // compile fragment shader
-  glShaderSource(fragmentShader, 1, &fragShaderSrc, NULL);
-  glCompileShader(fragmentShader);
-  // https://learnopengl.com/Getting-started/Hello-Triangle
-  glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-  if (!success) {
-    glGetShaderInfoLog(fragmentShader, 512, NULL, infoLog);
-    error.crash("fragment shader compilation failed", infoLog);
-  }
-
-  // Tell openGL how to interpret shader data
   // position attribute
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
@@ -171,26 +110,10 @@ int main(int argc, char **argv) {
                         (void *)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
 
-  // Create the shader program
-  unsigned int shaderProgram;
-  shaderProgram = glCreateProgram();
-
-  // Attach shaders to the shader program
-  glAttachShader(shaderProgram, vertexShader);
-  glAttachShader(shaderProgram, fragmentShader);
-  glLinkProgram(shaderProgram);
-  // test the shader was linked
-  glGetProgramiv(shaderProgram, GL_LINK_STATUS, &success);
-  if (!success) {
-    glGetProgramInfoLog(shaderProgram, 512, NULL, infoLog);
-    error.crash("failed to create shader program", infoLog);
-  }
-
-  // Clean up shader creation stuff from memory
-  glDeleteShader(vertexShader);
-  glDeleteShader(fragmentShader);
-
-  ShaderLoader shader("src/vertex.glsl", "src/fragment.glsl");
+  // You can unbind the VAO afterwards so other VAO calls won't accidentally
+  // modify this VAO, but this rarely happens. Modifying other VAOs requires a
+  // call to glBindVertexArray anyways so we generally don't unbind VAOs (nor
+  // VBOs) when it's not directly necessary. glBindVertexArray(0);
 
   // Game loop
   bool running = true;
@@ -219,7 +142,7 @@ int main(int argc, char **argv) {
     // Draw triangle
     glDrawArrays(GL_TRIANGLES, 0, 3);
     // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
-    glBindVertexArray(0);
+    // glBindVertexArray(0);
 
     SDL_GL_SwapWindow(window);
   };

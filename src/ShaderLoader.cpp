@@ -1,4 +1,5 @@
 #include "ShaderLoader.h"
+#include <iostream>
 
 ShaderLoader::ShaderLoader(const char *vertexPath, const char *fragmentPath) {
   std::string vertexCode;
@@ -40,7 +41,9 @@ ShaderLoader::ShaderLoader(const char *vertexPath, const char *fragmentPath) {
   glCompileShader(vertex);
   // Try to communicate errors if they exist
   glGetShaderInfoLog(vertex, 512, NULL, infoLog);
+  glGetShaderiv(vertex, GL_COMPILE_STATUS, &success);
   if (!success) {
+    std::cout << infoLog << success << std::endl;
     glGetShaderInfoLog(vertex, 512, NULL, infoLog);
     error.crash("Vertex shader compilation failed", infoLog);
   }
