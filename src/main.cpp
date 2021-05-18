@@ -4,6 +4,7 @@
 // Make sure Glew is loaded first
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
+#include <SDL2/SDL_image.h>
 #include <SDL2/SDL_opengl.h>
 // Not used yet
 //#include <glm/glm.hpp>
@@ -96,6 +97,22 @@ int main(int argc, char **argv) {
   // modify this VAO, but this rarely happens. Modifying other VAOs requires a
   // call to glBindVertexArray anyways so we generally don't unbind VAOs (nor
   // VBOs) when it's not directly necessary. glBindVertexArray(0);
+
+  // Determine how we handle textures
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
+  // Determine border colour for incorrectly sized textures
+  float borderColor[] = {0.5f, 0.5f, 0.5f, 1.0f};
+  glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+  // Texture aliasing
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+
+  // Load texture
+  SDL_Surface *image = IMG_Load("src/container.jpg");
+  if (image == nullptr) {
+    error.crash("SDL2_image was unable to load a texture", IMG_GetError());
+  }
 
   // Game loop
   bool running = true;
