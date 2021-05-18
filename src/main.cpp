@@ -17,26 +17,6 @@
 #include "Error.h"
 Error error("main");
 
-// Create method of retrieving GLSL shaders from file
-std::string readFile(const char *filepath) {
-  std::string content;
-  std::ifstream fileStream(filepath, std::ios::in);
-
-  if (!fileStream.is_open()) {
-    error.log("Error could not read file: " +
-              std::string(filepath, sizeof(filepath)));
-    return nullptr;
-  }
-  std::string line = "";
-  while (!fileStream.eof()) {
-    std::getline(fileStream, line);
-    content.append(line + "\n");
-  }
-
-  fileStream.close();
-  return content;
-}
-
 int main(int argc, char **argv) {
   // Initialise SDL2
   if (SDL_Init(SDL_INIT_EVERYTHING) != 0) {
