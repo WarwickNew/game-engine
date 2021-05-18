@@ -70,27 +70,39 @@ int main(int argc, char **argv) {
 
   float vertices[] = {
       // positions        // texture Co-ords
+      0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
       0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
       -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-      0.0f,  0.5f,  0.0f, 0.5f, 1.0f  // top
+      -0.5f, 0.5f,  0.0f, 0.0f, 1.0f  // top left
   };
 
-  unsigned int VBO, VAO;
+  unsigned int indices[] = {
+      0, 1, 3, // First triangle
+      1, 2, 3  // Second triangle
+  };
+
+  unsigned int VBO, VAO, EBO;
   glGenVertexArrays(1, &VAO);
   glGenBuffers(1, &VBO);
+  glGenBuffers(1, &EBO);
   // bind the Vertex Array Object first, then bind and set vertex buffer(s), and
   // then configure vertex attributes(s).
   glBindVertexArray(VAO);
 
+  // Bind VBO
   glBindBuffer(GL_ARRAY_BUFFER, VBO);
   glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
+  // Bind EBO
+  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
+               GL_STATIC_DRAW);
 
   // position attribute
   glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
   glEnableVertexAttribArray(0);
   // texture attribute
-  glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                        (void *)(2 * sizeof(float)));
+  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
+                        (void *)(3 * sizeof(float)));
   glEnableVertexAttribArray(1);
 
   // You can unbind the VAO afterwards so other VAO calls won't accidentally
@@ -108,11 +120,33 @@ int main(int argc, char **argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
-  // Load texture
+  // Load texture image
   SDL_Surface *image = IMG_Load("src/container.jpg");
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
   }
+
+  // create and bind texture object
+  unsigned int texture;
+  glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  // Handle different SDL Surface data types
+  int mode = GL_RGB;
+  if (image->format->BytesPerPixel == 4) {
+    mode = GL_RGBA;
+  }
+
+  // Generate texture and mipmap from image
+  glTexImage2D(GL_TEXTURE_2D, 0, mode, image->w, image->h, 0, mode,
+               GL_UNSIGNED_BYTE, image->pixels);
+  glGenerateMipmap(GL_TEXTURE_2D);
+
+  error.log(std::to_string(image->h));
+
+  // remove image surface now it's no longer needed to create texture
+  SDL_FreeSurface(image);
+  image = nullptr;
 
   // Game loop
   bool running = true;
@@ -139,8 +173,8 @@ int main(int argc, char **argv) {
 
     // TODO: Run game here lol
     // Draw triangle
-    glDrawArrays(GL_TRIANGLES, 0, 3);
-    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // glDrawArrays(GL_TRIANGLES, 0, 3);
+    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // glBindVertexArray(0);
 
     SDL_GL_SwapWindow(window);
