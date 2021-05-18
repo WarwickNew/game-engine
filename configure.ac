@@ -13,6 +13,7 @@ AC_PROG_CXX
 
 # Checks for libraries.
 PKG_CHECK_MODULES([sdl2], sdl2, [], AC_MSG_ERROR([Failed to find sdl2]))
+PKG_CHECK_MODULES([sdl2_image], SDL2_image, [], AC_MSG_ERROR([Failed to find sdl2_image]))
 PKG_CHECK_MODULES([glm], glm, [], AC_MSG_ERROR([Failed to find glm - OpenGL Mathmatics]))
 PKG_CHECK_MODULES([glew], glew, [], AC_MSG_ERROR([Failed to find glew - OpenGL Extention Wrangler]))
 PKG_CHECK_MODULES([opengl], gl, [], AC_MSG_ERROR([Failed to find OpenGL]))
