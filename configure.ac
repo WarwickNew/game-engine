@@ -5,6 +5,11 @@ AC_PREREQ([2.69])
 AC_INIT([Game], [0.0.1], [wytau@sdf.org])
 AC_CONFIG_SRCDIR([src/main.cpp])
 AC_CONFIG_HEADERS([config.h])
+
+# This is actually defined in Makefile.am
+# But this stops intellisense like software from complaining
+AC_DEFINE_UNQUOTED([DATAPATH], ["$pkgdatadir"],"DData Directory Path")
+
 AM_INIT_AUTOMAKE([-Wall -Werror foreign])
 AC_CONFIG_MACRO_DIR([m4])
 

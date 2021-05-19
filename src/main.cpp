@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
   // Create event handling struct
   SDL_Event input;
 
-  ShaderLoader shader("src/vertex.glsl", "src/fragment.glsl");
+  ShaderLoader shader(DATADIR "/vertex.glsl", DATADIR "/fragment.glsl");
 
   float vertices[] = {
       // positions        // texture Co-ords
@@ -121,7 +121,7 @@ int main(int argc, char **argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // Load texture image
-  SDL_Surface *image = IMG_Load("src/container.jpg");
+  SDL_Surface *image = IMG_Load(DATADIR "/container.jpg");
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
   }
@@ -141,8 +141,6 @@ int main(int argc, char **argv) {
   glTexImage2D(GL_TEXTURE_2D, 0, mode, image->w, image->h, 0, mode,
                GL_UNSIGNED_BYTE, image->pixels);
   glGenerateMipmap(GL_TEXTURE_2D);
-
-  error.log(std::to_string(image->h));
 
   // remove image surface now it's no longer needed to create texture
   SDL_FreeSurface(image);
