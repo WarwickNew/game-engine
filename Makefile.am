@@ -18,9 +18,21 @@ Game_SOURCES = \
 			   src/ShaderLoader.cpp
 
 
-Game_CPPFLAGS = @sdl2_CFLAGS@ @glew_CFLAGS@ @opengl_CFLAGS@ @glm_CFLAGS@ @sdl2_image_CFLAGS@
+# Generate final path locations based on configuration at compile time
+CLEANFILES = config_file_paths.h
+DISTCLEANFILES = config_file_paths.h
+BUILT_SOURCES = config_file_paths.h
+config_file_paths.h:
+	echo '#define DATADIR "$(pkgdatadir)"' >$@
 
-Game_LDFLAGS = @sdl2_LIBS@ @glew_LIBS@ @opengl_LIBS@ @glm_LIBS@ @sdl2_image_LIBS@
+Game_CPPFLAGS = @sdl2_CFLAGS@ \
+				@glew_CFLAGS@ \
+				@opengl_CFLAGS@ \
+				@glm_CFLAGS@ \
+				@sdl2_image_CFLAGS@
 
-#AM_CPPFLAGS = -DDATADIR=\"$(pkgdatadir)\"
-Game_CPPFLAGS += -DDATADIR=\"$(pkgdatadir)\"
+Game_LDFLAGS = @sdl2_LIBS@ \
+			   @glew_LIBS@ \
+			   @opengl_LIBS@ \
+			   @glm_LIBS@ \
+			   @sdl2_image_LIBS@
