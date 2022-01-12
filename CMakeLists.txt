@@ -22,6 +22,9 @@ find_package(SDL2_image REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 
+find_package(GLM REQUIRED)
+message(STATUS "GLM included: ${GLM_INCLUDE_DIR}")
+
 include_directories(
     ${SDL2_INCLUDE_DIRS}
     ${SDL2_IMAGE_DIRS}
