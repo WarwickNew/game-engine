@@ -1,0 +1,2 @@
+#pragma once
+#define ROOT_DIR "@SMAKE_SOURCE_DIR@/"
