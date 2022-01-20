@@ -11,10 +11,13 @@
 //#include <glm/glm.hpp>
 // File reader
 #include <fstream>
-#include <iostream>
 #include <string>
 // Shader
 #include "ShaderLoader.h"
+#include <iostream>
+
+// Camera postioning
+#include "PlayerCamera.h"
 
 // Include error class
 #include "Error.h"
@@ -53,31 +56,34 @@ int main(int argc, char **argv) {
   // TODO: Test that glContext was created successfully
 
   // Tell us the number of vertex attributes allowed in bug reports
-  //
   int nrAttributes;
   glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
   error.log("Maximum num of vertex attributes supported: " +
             std::to_string(nrAttributes));
 
   // Initialise Glew
-  if (glewInit() != GLEW_OK) {
+  GLenum glewStatus = glewInit();
+  if (glewStatus != GLEW_OK) {
+    // TODO make this work. I mean ffs if glew brakes how will I debug it.
+    // auto errorMsg = glewGetErrorString(glewStatus);
+    // error.log(errorMsg);
     error.crash("Unable to initialise GLEW (OpenGL Extention Wrangler)");
   }
 
   // Create event handling struct
   SDL_Event input;
 
-  ShaderLoader shader("../data/shaders"
+  ShaderLoader shader("./data/shaders"
                       "/vertex.glsl",
-                      "../data/shaders"
+                      "./data/shaders"
                       "/fragment.glsl");
 
   float vertices[] = {
       // positions        // texture Co-ords
-      0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
-      0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-      -0.5f, 0.5f,  0.0f, 0.0f, 1.0f  // top left
+      0.5f,  0.5f,  1.0f, 1.0f, 1.0f, // top right
+      0.5f,  -0.5f, 1.0f, 1.0f, 0.0f, // bottom right
+      -0.5f, -0.5f, 1.0f, 0.0f, 0.0f, // bottom left
+      -0.5f, 0.5f,  1.0f, 0.0f, 1.0f  // top left
   };
 
   unsigned int indices[] = {
@@ -125,7 +131,7 @@ int main(int argc, char **argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // Load texture image
-  SDL_Surface *image = IMG_Load("../data"
+  SDL_Surface *image = IMG_Load("./data"
                                 "/container.jpg");
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
@@ -151,6 +157,11 @@ int main(int argc, char **argv) {
   SDL_FreeSurface(image);
   image = nullptr;
 
+  // Finally create camera object
+  PlayerCamera camera;
+
+  GLuint mvpLocation = glGetUniformLocation(shader.getShaderProgramID(), "mvp");
+
   // Game loop
   bool running = true;
   while (running) {
@@ -162,12 +173,18 @@ int main(int argc, char **argv) {
       }
       // TODO: Do something with keys lol
     };
-    // Clear screen ready for next loop
+    // Perform game logic
+    camera.tick();
+
+    // Clear screen ready for this loop
     glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Make every shader/rendering call from this point on use our shader
     // glUseProgram(shaderProgram);
 
+    glUniformMatrix4fv(mvpLocation, 1, GL_FALSE,
+                       glm::value_ptr(camera.getMVP()));
+    // use our shader
     shader.use();
 
     // I think this is meant to be here but it breaks...

@@ -21,6 +21,9 @@ public:
   // use the shader
   void use();
 
+  // Get shader id until I figure out uniforms
+  unsigned int getShaderProgramID();
+
   // utility uniform functions
   void setBool(const std::string &name, bool value) const;
   void setInt(const std::string &name, int value) const;

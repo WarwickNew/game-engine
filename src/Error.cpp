@@ -14,5 +14,6 @@ void Error::warn(std::string msg) {
   // throw object + ": " + msg;
 }
 void Error::log(std::string msg) {
-  std::cout << object << ": \n" << msg << std::endl;
+  std::cout << object << std::endl;
+  std::cout << msg << std::endl;
 }
