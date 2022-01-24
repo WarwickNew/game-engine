@@ -8,7 +8,8 @@
 #include <SDL2/SDL_image.h>
 #include <SDL2/SDL_opengl.h>
 // Not used yet
-//#include <glm/glm.hpp>
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 // File reader
 #include <fstream>
 #include <iostream>
@@ -67,9 +68,9 @@ int main(int argc, char **argv) {
   // Create event handling struct
   SDL_Event input;
 
-  ShaderLoader shader("../data/shaders"
+  ShaderLoader shader("./data/shaders"
                       "/vertex.glsl",
-                      "../data/shaders"
+                      "./data/shaders"
                       "/fragment.glsl");
 
   float vertices[] = {
@@ -125,7 +126,7 @@ int main(int argc, char **argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // Load texture image
-  SDL_Surface *image = IMG_Load("../data"
+  SDL_Surface *image = IMG_Load("./data"
                                 "/container.jpg");
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
@@ -151,6 +152,28 @@ int main(int argc, char **argv) {
   SDL_FreeSurface(image);
   image = nullptr;
 
+  // Mess with perspective
+  // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
+  // unit <-> 100 units
+  float width = 4;
+  float height = 3;
+  glm::mat4 Projection = glm::perspective(
+      glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
+
+  // Camera matrix
+  glm::mat4 View = glm::lookAt(
+      glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
+      glm::vec3(0, 0, 0), // and looks at the origin
+      glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
+  );
+  // Model matrix : an identity matrix (model will be at the origin)
+  glm::mat4 Model = glm::mat4(1.0f);
+
+  // Our ModelViewProjection : multiplication of our 3 matrices
+  glm::mat4 mvp =
+      Projection * View *
+      Model; // Remember, matrix multiplication is the other way around
+
   // Game loop
   bool running = true;
   while (running) {
@@ -168,6 +191,8 @@ int main(int argc, char **argv) {
     // Make every shader/rendering call from this point on use our shader
     // glUseProgram(shaderProgram);
 
+    // Send our glsl shader our mvp
+    shader.setMat4("MVP", mvp);
     shader.use();
 
     // I think this is meant to be here but it breaks...
