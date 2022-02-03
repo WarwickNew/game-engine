@@ -16,11 +16,9 @@ private:
   const float mouseSensitivity = 0.005f;
 
   // Player position
-  struct position {
-    glm::vec4 vectorPos;
-    float pitch;
-    float yaw;
-  } pos;
+  glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
+  glm::vec3 cameraForward = glm::vec3(0.0f, 0.0f, -1.0f);
+  glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, -1.0f);
 
   // Mouse position
   int mouseX, mouseY;
