@@ -15,6 +15,35 @@ void PlayerCamera::tick() {
   // get position to look at
   glm::vec3 cameraTarget = cameraPosition + cameraForward;
 
+  // TODO Handle movement speed based on delta time
+  // handle keyboard input
+  const Uint8 *keyboardState = SDL_GetKeyboardState(nullptr);
+  if (keyboardState[SDL_SCANCODE_W])
+    cameraPosition += cameraForward * movementSpeed;
+  if (keyboardState[SDL_SCANCODE_S])
+    cameraPosition -= cameraForward * movementSpeed;
+  if (keyboardState[SDL_SCANCODE_A])
+    cameraPosition += cameraRight * movementSpeed;
+  if (keyboardState[SDL_SCANCODE_D])
+    cameraPosition -= cameraRight * movementSpeed;
+
+  // handle mouse
+  SDL_GetRelativeMouseState(&mouseX, &mouseY);
+  cameraYaw += mouseX * mouseSensitivity;
+  cameraPitch -= mouseY * mouseSensitivity;
+  // lock pitch to certain range
+  if (cameraPitch > 89.0f)
+    cameraPitch = 89.0f;
+  if (cameraPitch < -89.0f)
+    cameraPitch = -89.0f;
+
+  // calculate camera rotation
+  glm::vec3 direction;
+  direction.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+  direction.y = sin(glm::radians(cameraPitch));
+  direction.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
+  cameraForward = glm::normalize(direction);
+
   // MVP stuff
   glm::mat4 model = glm::mat4(1.0f);
 
