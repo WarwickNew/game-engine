@@ -16,6 +16,7 @@
 #include "ShaderLoader.h"
 // Camera
 #include "PlayerCamera.h"
+#include "helpers/RootDir.h"
 
 // Include error class
 #include "Error.h"
@@ -68,10 +69,8 @@ int main(int argc, char **argv) {
   // Create event handling struct
   SDL_Event input;
 
-  ShaderLoader shader("./data/shaders"
-                      "/vertex.glsl",
-                      "./data/shaders"
-                      "/fragment.glsl");
+  ShaderLoader shader(ROOT_DIR "data/shaders/vertex.glsl",
+                      ROOT_DIR "data/shaders/fragment.glsl");
 
   float vertices[] = {
       // positions        // texture Co-ords
@@ -126,8 +125,7 @@ int main(int argc, char **argv) {
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 
   // Load texture image
-  SDL_Surface *image = IMG_Load("./data"
-                                "/container.jpg");
+  SDL_Surface *image = IMG_Load(ROOT_DIR "data/container.jpg");
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
   }

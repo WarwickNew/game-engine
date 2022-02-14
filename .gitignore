@@ -1,14 +1,12 @@
-# Ignore Builds
-build/
+# Ignore Cmake build files
+.cache/
+.cmake/
+CMakeCache.txt
+CMakeFiles/
+Game
+Makefile
+cmake_install.cmake
+compile_commands.json
 
-# Ignore autoconf cruft for now
-Makefile.in
-aclocal.m4
-autom4te.cache/
-autoscan.log
-compile
-config.h.in
-configure
-depcomp
-install-sh
-missing
+# Ignore Cmake'd files
+src/helpers/RootDir.h
