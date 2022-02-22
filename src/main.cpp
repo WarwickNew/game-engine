@@ -17,6 +17,9 @@
 // Camera
 #include "PlayerCamera.h"
 #include "helpers/RootDir.h"
+// Objects
+#include "Mesh.h"
+#include <vector>
 
 // Include error class
 #include "Error.h"
@@ -72,58 +75,6 @@ int main(int argc, char **argv) {
   ShaderLoader shader(ROOT_DIR "data/shaders/vertex.glsl",
                       ROOT_DIR "data/shaders/fragment.glsl");
 
-  float vertices[] = {
-      // positions        // texture Co-ords
-      0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
-      0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-      -0.5f, 0.5f,  0.0f, 0.0f, 1.0f  // top left
-  };
-
-  unsigned int indices[] = {
-      0, 1, 3, // First triangle
-      1, 2, 3  // Second triangle
-  };
-
-  unsigned int VBO, VAO, EBO;
-  glGenVertexArrays(1, &VAO);
-  glGenBuffers(1, &VBO);
-  glGenBuffers(1, &EBO);
-  // bind the Vertex Array Object first, then bind and set vertex buffer(s), and
-  // then configure vertex attributes(s).
-  glBindVertexArray(VAO);
-
-  // Bind VBO
-  glBindBuffer(GL_ARRAY_BUFFER, VBO);
-  glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
-  // Bind EBO
-  glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
-  glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices,
-               GL_STATIC_DRAW);
-
-  // position attribute
-  glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void *)0);
-  glEnableVertexAttribArray(0);
-  // texture attribute
-  glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float),
-                        (void *)(3 * sizeof(float)));
-  glEnableVertexAttribArray(1);
-
-  // You can unbind the VAO afterwards so other VAO calls won't accidentally
-  // modify this VAO, but this rarely happens. Modifying other VAOs requires a
-  // call to glBindVertexArray anyways so we generally don't unbind VAOs (nor
-  // VBOs) when it's not directly necessary. glBindVertexArray(0);
-
-  // Determine how we handle textures
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_BORDER);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_BORDER);
-  // Determine border colour for incorrectly sized textures
-  float borderColor[] = {0.5f, 0.5f, 0.5f, 1.0f};
-  glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
-  // Texture aliasing
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
-  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
-
   // Load texture image
   SDL_Surface *image = IMG_Load(ROOT_DIR "data/container.jpg");
   if (image == nullptr) {
@@ -133,7 +84,7 @@ int main(int argc, char **argv) {
   // create and bind texture object
   unsigned int texture;
   glGenTextures(1, &texture);
-  glBindTexture(GL_TEXTURE_2D, texture);
+  // glBindTexture(GL_TEXTURE_2D, texture);
 
   // Handle different SDL Surface data types
   int mode = GL_RGB;
@@ -150,6 +101,81 @@ int main(int argc, char **argv) {
   SDL_FreeSurface(image);
   image = nullptr;
 
+  // Generate Mesh
+  // Define some useful structures to be used in the mesh object
+  //  struct Vertex {
+  //    glm::vec3 Position;
+  //    glm::vec3 Normal;
+  //    glm::vec2 TexCoords;
+  //  };
+  //  struct Texture {
+  //    unsigned int id;
+  //    std::string type;
+  //  };
+  float vertices[] = {
+      // positions        // texture Co-ords
+      0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
+      0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
+      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
+      -0.5f, 0.5f,  0.0f, 0.0f, 1.0f  // top left
+  };
+
+  unsigned int indices[] = {
+      0, 1, 3, // First triangle
+      1, 2, 3  // Second triangle
+  };
+
+  std::vector<Vertex> mvertices;
+  Vertex vertex;
+  vertex.Position = glm::vec3(0.5f, 0.5f, 0.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(1.0f, 1.0f);
+  mvertices.push_back(vertex);
+  vertex.Position = glm::vec3(0.5f, -0.5f, 0.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(1.0f, 0.0f);
+  mvertices.push_back(vertex);
+  vertex.Position = glm::vec3(-0.5f, -0.5f, 0.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+  mvertices.push_back(vertex);
+  vertex.Position = glm::vec3(-0.5f, 0.5f, 0.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(0.0f, 1.0f);
+  mvertices.push_back(vertex);
+
+  std::vector<unsigned int> mindices{
+      0, 1, 3, // First triangle
+      1, 2, 3  // Second triangle
+  };
+
+  std::vector<Texture> mtextures;
+  Texture mtexture;
+  mtexture.id = texture;
+  mtexture.type = "texture_diffuse";
+
+  Mesh mesh(mvertices, mindices, mtextures);
+
+  std::vector<Vertex> mvertices2;
+  vertex.Position = glm::vec3(0.5f, 0.5f, 1.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(1.0f, 1.0f);
+  mvertices2.push_back(vertex);
+  vertex.Position = glm::vec3(0.5f, -0.5f, 1.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(1.0f, 0.0f);
+  mvertices2.push_back(vertex);
+  vertex.Position = glm::vec3(-0.5f, -0.5f, 1.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(0.0f, 0.0f);
+  mvertices2.push_back(vertex);
+  vertex.Position = glm::vec3(-0.5f, 0.5f, 1.0f);
+  vertex.Normal = glm::vec3();
+  vertex.TexCoords = glm::vec2(0.0f, 1.0f);
+  mvertices2.push_back(vertex);
+
+  Mesh mesh2(mvertices2, mindices, mtextures);
+
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
   // unit <-> 100 units
@@ -157,20 +183,6 @@ int main(int argc, char **argv) {
   float height = 600;
   glm::mat4 Projection = glm::perspective(
       glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
-
-  //// Camera matrix
-  // glm::mat4 View = glm::lookAt(
-  //     glm::vec3(4, 3, 3), // Camera is at (4,3,3), in World Space
-  //     glm::vec3(0, 0, 0), // and looks at the origin
-  //     glm::vec3(0, 1, 0)  // Head is up (set to 0,-1,0 to look upside-down)
-  //);
-  //// Model matrix : an identity matrix (model will be at the origin)
-  // glm::mat4 Model = glm::mat4(1.0f);
-
-  //// Our ModelViewProjection : multiplication of our 3 matrices
-  // glm::mat4 mvp =
-  //     Projection * View *
-  //     Model; // Remember, matrix multiplication is the other way around
 
   PlayerCamera camera;
 
@@ -195,16 +207,22 @@ int main(int argc, char **argv) {
 
     // Send our glsl shader our mvp
     shader.setMat4("MVP", camera.getMVP());
+
+    // Draw Meshes
+    mesh.Draw(shader);
+    mesh2.Draw(shader);
+
+    // Finally render everything
     shader.use();
 
     // I think this is meant to be here but it breaks...
     // shove vertex array into buffer
-    glBindVertexArray(VAO);
+    // glBindVertexArray(VAO);
 
     // TODO: Run game here lol
     // Draw triangle
     // glDrawArrays(GL_TRIANGLES, 0, 3);
-    glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+    // glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
     // glBindVertexArray(0);
 
     SDL_GL_SwapWindow(window);

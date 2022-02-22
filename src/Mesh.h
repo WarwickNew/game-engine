@@ -2,7 +2,7 @@
 #include "Error.h"
 #include "ShaderLoader.h"
 #include <glm/glm.hpp>
-#include <iostream>
+#include <string>
 #include <vector>
 
 // Define some useful structures to be used in the mesh object
@@ -29,6 +29,7 @@ public:
   std::vector<Texture> textures;
 
   void Draw(ShaderLoader &shader);
+
   Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
        std::vector<Texture> textures);
 };
