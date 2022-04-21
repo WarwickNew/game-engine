@@ -19,6 +19,7 @@
 #include "helpers/RootDir.h"
 // Objects
 #include "Mesh.h"
+#include "Model.h"
 #include <vector>
 
 // Include error class
@@ -176,6 +177,13 @@ int main(int argc, char **argv) {
 
   Mesh mesh2(mvertices2, mindices, mtextures);
 
+  std::vector<Mesh> modelMeshes;
+  modelMeshes.push_back(mesh);
+  modelMeshes.push_back(mesh2);
+  Model model(modelMeshes);
+
+  Model model2(mesh);
+
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
   // unit <-> 100 units
@@ -213,8 +221,10 @@ int main(int argc, char **argv) {
     shader.setMat4("MVP", camera.getMVP());
 
     // Draw Meshes
-    mesh.Draw(shader);
-    mesh2.Draw(shader);
+    // mesh.draw(shader);
+    // mesh2.draw(shader);
+    model2.draw(shader);
+    model.draw(shader);
 
     // Finally render everything
     shader.use();
