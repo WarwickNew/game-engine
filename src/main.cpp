@@ -184,7 +184,12 @@ int main(int argc, char **argv) {
   glm::mat4 Projection = glm::perspective(
       glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 
+  // Create player camera object
   PlayerCamera camera;
+
+  // Enable Render order things don't render in front of the wrong objects
+  glEnable(GL_DEPTH_TEST);
+  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   // Game loop
   bool running = true;
@@ -200,7 +205,6 @@ int main(int argc, char **argv) {
     camera.tick();
 
     // Clear screen ready for next loop
-    glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     // Make every shader/rendering call from this point on use our shader
     // glUseProgram(shaderProgram);
