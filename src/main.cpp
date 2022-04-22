@@ -184,6 +184,8 @@ int main(int argc, char **argv) {
 
   Model model2(mesh);
 
+  model.translate(glm::vec3(1.0f, 0.0f, 0.0f));
+
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
   // unit <-> 100 units
@@ -221,8 +223,6 @@ int main(int argc, char **argv) {
     shader.setMat4("MVP", camera.getMVP());
 
     // Draw Meshes
-    // mesh.draw(shader);
-    // mesh2.draw(shader);
     model2.draw(shader);
     model.draw(shader);
 
