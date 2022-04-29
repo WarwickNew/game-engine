@@ -186,6 +186,8 @@ int main(int argc, char **argv) {
 
   model.translate(glm::vec3(1.0f, 0.0f, 0.0f));
 
+  Model backpack(ROOT_DIR "data/models/backpack/backpack.mtl");
+
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
   // unit <-> 100 units
@@ -227,6 +229,7 @@ int main(int argc, char **argv) {
     // Draw Meshes
     model2.draw(shader);
     model.draw(shader);
+    backpack.draw(shader);
 
     // Finally render everything
     shader.use();
