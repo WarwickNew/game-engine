@@ -146,8 +146,8 @@ int main(int argc, char **argv) {
   mvertices.push_back(vertex);
 
   std::vector<unsigned int> mindices{
-      0, 1, 3, // First triangle
-      1, 2, 3  // Second triangle
+      0, 3, 1, // First triangle
+      1, 3, 2  // Second triangle
   };
 
   std::vector<Texture> mtextures;
@@ -199,6 +199,8 @@ int main(int argc, char **argv) {
 
   // Enable Render order things don't render in front of the wrong objects
   glEnable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  // glCullFace(GL_FRONT);
   glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
 
   // Game loop
