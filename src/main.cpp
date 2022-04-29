@@ -186,7 +186,7 @@ int main(int argc, char **argv) {
 
   model.translate(glm::vec3(1.0f, 0.0f, 0.0f));
 
-  Model backpack(ROOT_DIR "data/models/backpack/backpack.mtl");
+  Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
 
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1

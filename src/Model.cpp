@@ -71,7 +71,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   }
   // Handle indeces
   // Loop through the meshes faces to get the correct order
-  for (unsigned int i = 0; mesh->mNumFaces; i++) {
+  for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
     aiFace face = mesh->mFaces[i];
     // loop through and add each face's indecies
     for (unsigned int faceIndicie = 0; faceIndicie < face.mNumIndices;
@@ -79,7 +79,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
       indecies.push_back(face.mIndices[faceIndicie]);
     }
   }
-  // TODO Handle Assimps material format
+  // Handle Assimps material format
   if (mesh->mMaterialIndex >= 0) {
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
     std::vector<Texture> diffuseMaps = loadMaterialTextures(
