@@ -23,15 +23,15 @@ find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
-
 find_package(GLM REQUIRED)
-message(STATUS "GLM included: ${GLM_INCLUDE_DIR}")
+find_package(assimp REQUIRED)
 
 include_directories(
     ${SDL2_INCLUDE_DIRS}
     ${SDL2_IMAGE_DIRS}
     ${OPENGL_INCLUDE_DIRS}
-    ${GLEW_INCLUDE_DIRS})
+    ${GLEW_INCLUDE_DIRS}
+    ${ASSIMP_INCLUDE_DIRS})
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
@@ -39,4 +39,5 @@ target_link_libraries(${PROJECT_NAME}
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
     ${OPENGL_LIBRARIES}
-    ${GLEW_LIBRARIES})
+    ${GLEW_LIBRARIES}
+    ${ASSIMP_LIBRARIES})

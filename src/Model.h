@@ -2,6 +2,9 @@
 #include "Error.h"
 #include "Mesh.h"
 #include "ShaderLoader.h"
+#include <assimp/Importer.hpp>
+#include <assimp/postprocess.h>
+#include <assimp/scene.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
@@ -19,7 +22,11 @@ private:
   // Position
   glm::vec4 position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 
+  void loadModel(char *path);
+
 public:
+  // Create a model from file
+  Model(char *path);
   // Used to create a mesh out of a single mesh.
   Model(Mesh mesh);
   // Used to create a mesh out of multiple meshes.
