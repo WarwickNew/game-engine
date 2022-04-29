@@ -33,7 +33,8 @@ void Model::loadModel(std::string path) {
     error.crash("Assimp failed to load model data", import.GetErrorString());
     return;
   }
-  directory = path.substr(0, path.find_last_of('/'));
+  directory = path.substr(0, path.find_last_of('/')) + '/';
+  error.log(directory);
   processNode(scene->mRootNode, scene);
 }
 void Model::processNode(aiNode *node, const aiScene *scene) {
