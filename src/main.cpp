@@ -186,7 +186,8 @@ int main(int argc, char **argv) {
 
   model.translate(glm::vec3(1.0f, 0.0f, 0.0f));
 
-  Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
+  // Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
+  Model cube(ROOT_DIR "data/models/cube/cube.obj");
 
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
@@ -203,7 +204,7 @@ int main(int argc, char **argv) {
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_CULL_FACE);
   // glCullFace(GL_FRONT);
-  glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
+  glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
   // Game loop
   bool running = true;
@@ -227,9 +228,9 @@ int main(int argc, char **argv) {
     shader.setMat4("MVP", camera.getMVP());
 
     // Draw Meshes
-    model2.draw(shader);
-    model.draw(shader);
-    backpack.draw(shader);
+    // model2.draw(shader);
+    // model.draw(shader);
+    cube.draw(shader);
 
     // Finally render everything
     shader.use();
