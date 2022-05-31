@@ -55,6 +55,8 @@ void Mesh::draw(ShaderLoader &shader) {
 
     shader.setFloat(("material." + name + number).c_str(), i);
     glBindTexture(GL_TEXTURE_2D, textures[i].id);
+    error.log(std::to_string(textures[i].id));
+    error.log(std::to_string(GL_TEXTURE0 + i));
   }
   glActiveTexture(GL_TEXTURE0);
 

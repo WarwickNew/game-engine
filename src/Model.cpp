@@ -130,8 +130,19 @@ unsigned int Model::loadTextureFromFile(std::string file,
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
   }
+
   // Generate the texture and put its reference id in the texture variable
   glGenTextures(1, &texture);
+  glBindTexture(GL_TEXTURE_2D, texture);
+
+  // set some textue defaults
+  float borderColor[] = {1.0f, 1.0f, 0.0f, 1.0f};
+  glTexParameterfv(GL_TEXTURE_2D, GL_TEXTURE_BORDER_COLOR, borderColor);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+  glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER,
+                  GL_LINEAR_MIPMAP_LINEAR);
 
   // Handle different SDL Surface data types
   int mode = GL_RGB;
@@ -148,5 +159,6 @@ unsigned int Model::loadTextureFromFile(std::string file,
   SDL_FreeSurface(image);
   image = nullptr;
 
+  error.log("loaded texture: " + std::to_string(texture));
   return texture;
 }
