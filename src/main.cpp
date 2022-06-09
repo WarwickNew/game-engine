@@ -3,8 +3,6 @@
 // Make sure Glew is loaded first
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
-#include <SDL2/SDL_opengl.h>
 // Not used yet
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -76,116 +74,6 @@ int main(int argc, char **argv) {
   ShaderLoader shader(ROOT_DIR "data/shaders/vertex.glsl",
                       ROOT_DIR "data/shaders/fragment.glsl");
 
-  // Load texture image
-  // SDL_Surface *image = IMG_Load(ROOT_DIR "data/container.jpg");
-  // if (image == nullptr) {
-  //  error.crash("SDL2_image was unable to load a texture", IMG_GetError());
-  //}
-
-  // create and bind texture object
-  // unsigned int texture;
-  // glGenTextures(1, &texture);
-  //// glBindTexture(GL_TEXTURE_2D, texture);
-
-  //// Handle different SDL Surface data types
-  // int mode = GL_RGB;
-  // if (image->format->BytesPerPixel == 4) {
-  //  mode = GL_RGBA;
-  //}
-
-  //// Generate texture and mipmap from image
-  // glTexImage2D(GL_TEXTURE_2D, 0, mode, image->w, image->h, 0, mode,
-  //             GL_UNSIGNED_BYTE, image->pixels);
-  // glGenerateMipmap(GL_TEXTURE_2D);
-
-  // remove image surface now it's no longer needed to create texture
-  // SDL_FreeSurface(image);
-  // image = nullptr;
-
-  // Generate Mesh
-  // Define some useful structures to be used in the mesh object
-  //  struct Vertex {
-  //    glm::vec3 Position;
-  //    glm::vec3 Normal;
-  //    glm::vec2 TexCoords;
-  //  };
-  //  struct Texture {
-  //    unsigned int id;
-  //    std::string type;
-  //  };
-  float vertices[] = {
-      // positions        // texture Co-ords
-      0.5f,  0.5f,  0.0f, 1.0f, 1.0f, // top right
-      0.5f,  -0.5f, 0.0f, 1.0f, 0.0f, // bottom right
-      -0.5f, -0.5f, 0.0f, 0.0f, 0.0f, // bottom left
-      -0.5f, 0.5f,  0.0f, 0.0f, 1.0f  // top left
-  };
-
-  // unsigned int indices[] = {
-  //    0, 1, 3, // First triangle
-  //    1, 2, 3  // Second triangle
-  //};
-
-  // std::vector<Vertex> mvertices;
-  // Vertex vertex;
-  // vertex.Position = glm::vec3(0.5f, 0.5f, 0.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(1.0f, 1.0f);
-  // mvertices.push_back(vertex);
-  // vertex.Position = glm::vec3(0.5f, -0.5f, 0.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(1.0f, 0.0f);
-  // mvertices.push_back(vertex);
-  // vertex.Position = glm::vec3(-0.5f, -0.5f, 0.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-  // mvertices.push_back(vertex);
-  // vertex.Position = glm::vec3(-0.5f, 0.5f, 0.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(0.0f, 1.0f);
-  // mvertices.push_back(vertex);
-
-  // std::vector<unsigned int> mindices{
-  //    0, 3, 1, // First triangle
-  //    1, 3, 2  // Second triangle
-  //};
-
-  // std::vector<Texture> mtextures;
-  // Texture mtexture;
-  // mtexture.id = texture;
-  // mtexture.type = "texture_diffuse";
-
-  // Mesh mesh(mvertices, mindices, mtextures);
-
-  // std::vector<Vertex> mvertices2;
-  // vertex.Position = glm::vec3(0.5f, 0.5f, 1.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(1.0f, 1.0f);
-  // mvertices2.push_back(vertex);
-  // vertex.Position = glm::vec3(0.5f, -0.5f, 1.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(1.0f, 0.0f);
-  // mvertices2.push_back(vertex);
-  // vertex.Position = glm::vec3(-0.5f, -0.5f, 1.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(0.0f, 0.0f);
-  // mvertices2.push_back(vertex);
-  // vertex.Position = glm::vec3(-0.5f, 0.5f, 1.0f);
-  // vertex.Normal = glm::vec3();
-  // vertex.TexCoords = glm::vec2(0.0f, 1.0f);
-  // mvertices2.push_back(vertex);
-
-  // Mesh mesh2(mvertices2, mindices, mtextures);
-
-  // std::vector<Mesh> modelMeshes;
-  // modelMeshes.push_back(mesh);
-  // modelMeshes.push_back(mesh2);
-  // Model model(modelMeshes);
-
-  // Model model2(mesh);
-
-  // model.translate(glm::vec3(1.0f, 0.0f, 0.0f));
-
   Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
   // Model cube(ROOT_DIR "data/models/cube/cube.obj");
 
@@ -228,8 +116,6 @@ int main(int argc, char **argv) {
     shader.setMat4("MVP", camera.getMVP());
 
     // Draw Meshes
-    // model2.draw(shader);
-    // model.draw(shader);
     // cube.draw(shader);
     backpack.draw(shader);
 
