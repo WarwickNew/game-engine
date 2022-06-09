@@ -186,8 +186,8 @@ int main(int argc, char **argv) {
 
   // model.translate(glm::vec3(1.0f, 0.0f, 0.0f));
 
-  // Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
-  Model cube(ROOT_DIR "data/models/cube/cube.obj");
+  Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
+  // Model cube(ROOT_DIR "data/models/cube/cube.obj");
 
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
@@ -230,8 +230,8 @@ int main(int argc, char **argv) {
     // Draw Meshes
     // model2.draw(shader);
     // model.draw(shader);
-    cube.draw(shader);
-    // backpack.draw(shader);
+    // cube.draw(shader);
+    backpack.draw(shader);
 
     // Finally render everything
     shader.use();
