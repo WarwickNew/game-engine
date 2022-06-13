@@ -103,6 +103,14 @@ int main(int argc, char **argv) {
       if (input.type == SDL_QUIT) {
         running = false;
       }
+      switch (input.type) {
+      case SDL_QUIT:
+        running = false;
+      case SDL_KEYDOWN:
+        const Uint8 *keys = SDL_GetKeyboardState(NULL);
+        if (keys[SDL_SCANCODE_ESCAPE])
+          running = false;
+      }
       // TODO: Do something with keys lol
     };
     camera.tick();

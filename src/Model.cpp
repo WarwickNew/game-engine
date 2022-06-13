@@ -37,7 +37,6 @@ void Model::loadModel(std::string path) {
   processNode(scene->mRootNode, scene);
 }
 void Model::processNode(aiNode *node, const aiScene *scene) {
-  error.log("Processing Node");
   // if the node has meshes process them
   for (unsigned int i = 0; i < node->mNumMeshes; i++) {
     aiMesh *mesh = scene->mMeshes[node->mMeshes[i]];
@@ -53,9 +52,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indecies;
   std::vector<Texture> textures;
-  error.log("Processing Mesh");
 
-  error.log("Loading vertices");
   for (unsigned int i = 0; i < mesh->mNumVertices; i++) {
     Vertex vertex;
     // process vertex postions and add to our mesh
@@ -74,7 +71,6 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
   }
   // Handle indeces
   // Loop through the meshes faces to get the correct order
-  error.log("Loading indecies");
   for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
     aiFace face = mesh->mFaces[i];
     // loop through and add each face's indecies
@@ -84,9 +80,7 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     }
   }
   // Handle Assimps material format
-  error.log("loading textures");
   if (mesh->mMaterialIndex >= 0) {
-    error.log("material index is greater than 0");
     aiMaterial *material = scene->mMaterials[mesh->mMaterialIndex];
     std::vector<Texture> diffuseMaps = loadMaterialTextures(
         material, aiTextureType_DIFFUSE, "texture_diffuse");
@@ -108,14 +102,8 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *material,
     bool skip = false;
 
     // check we're not loading in a texture we already have
-
-    error.log(std::to_string(textures_loaded.size()));
-
     for (unsigned int loadedtex = 0; loadedtex < textures_loaded.size();
          loadedtex++) {
-
-      error.log(std::string("loaded texture: ") +
-                textures_loaded[loadedtex].path.data());
 
       if (std::strcmp(textures_loaded[loadedtex].path.data(), str.C_Str()) ==
           0) {
