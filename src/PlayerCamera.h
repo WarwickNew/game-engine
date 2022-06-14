@@ -20,8 +20,8 @@ private:
   glm::vec3 cameraPosition = glm::vec3(0.0f, 0.0f, 3.0f);
   glm::vec3 cameraForward = glm::vec3(0.0f, 0.0f, -1.0f);
   glm::vec3 cameraUp = glm::vec3(0.0f, 0.0f, -1.0f);
-  float cameraYaw = -90.0f;
-  float cameraPitch = 0.0f;
+  float cameraYaw = glm::radians(-90.0f);
+  float cameraPitch = glm::radians(0.0f);
 
   // Mouse position
   int mouseX, mouseY;

@@ -8,12 +8,26 @@ PlayerCamera::PlayerCamera() {
 PlayerCamera::~PlayerCamera() {}
 
 void PlayerCamera::tick() {
+
+  // handle mouse
+  SDL_GetRelativeMouseState(&mouseX, &mouseY);
+  cameraYaw += mouseX * glm::radians(mouseSensitivity);
+  cameraPitch -= mouseY * glm::radians(mouseSensitivity);
+  // lock pitch to certain range
+  if (cameraPitch > 89.0f)
+    cameraPitch = 89.0f;
+  if (cameraPitch < -89.0f)
+    cameraPitch = -89.0f;
+
+  // calculate camera rotation
+  glm::vec3 direction;
+  direction.x = cos(cameraYaw) * cos(cameraPitch);
+  direction.y = sin(cameraPitch);
+  direction.z = sin(cameraYaw) * cos(cameraPitch);
+  cameraForward = glm::normalize(direction);
   // get camera right
   glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f);
   glm::vec3 cameraRight = glm::normalize(glm::cross(up, cameraForward));
-
-  // get position to look at
-  glm::vec3 cameraTarget = cameraPosition + cameraForward;
 
   // TODO Handle movement speed based on delta time
   // handle keyboard input
@@ -27,22 +41,8 @@ void PlayerCamera::tick() {
   if (keyboardState[SDL_SCANCODE_D])
     cameraPosition -= cameraRight * movementSpeed;
 
-  // handle mouse
-  SDL_GetRelativeMouseState(&mouseX, &mouseY);
-  cameraYaw += mouseX * mouseSensitivity;
-  cameraPitch -= mouseY * mouseSensitivity;
-  // lock pitch to certain range
-  if (cameraPitch > 89.0f)
-    cameraPitch = 89.0f;
-  if (cameraPitch < -89.0f)
-    cameraPitch = -89.0f;
-
-  // calculate camera rotation
-  glm::vec3 direction;
-  direction.x = cos(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-  direction.y = sin(glm::radians(cameraPitch));
-  direction.z = sin(glm::radians(cameraYaw)) * cos(glm::radians(cameraPitch));
-  cameraForward = glm::normalize(direction);
+  // get position to look at
+  glm::vec3 cameraTarget = cameraPosition + cameraForward;
 
   // MVP stuff
   glm::mat4 model = glm::mat4(1.0f);

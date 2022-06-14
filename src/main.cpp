@@ -3,12 +3,7 @@
 // Make sure Glew is loaded first
 #include <GL/gl.h>
 #include <SDL2/SDL.h>
-// Not used yet
-#include <glm/glm.hpp>
-#include <glm/gtc/matrix_transform.hpp>
 // File reader
-#include <fstream>
-#include <iostream>
 #include <string>
 // Shader
 #include "ShaderLoader.h"
@@ -18,7 +13,6 @@
 // Objects
 #include "Mesh.h"
 #include "Model.h"
-#include <vector>
 
 // Include error class
 #include "Error.h"
@@ -34,7 +28,7 @@ int main(int argc, char **argv) {
   // Make OpenGL use double buffering (Render game first then shove to output)
   SDL_GL_SetAttribute(SDL_GL_DOUBLEBUFFER, 1);
 
-  // TODO: Understand what a depth buffer is
+  // Initialise depth buffer
   SDL_GL_SetAttribute(SDL_GL_DEPTH_SIZE, 16);
 
   // TODO: Discover if this is necessary for linux and what values they need be
@@ -54,10 +48,11 @@ int main(int argc, char **argv) {
 
   // Create glContext
   SDL_GLContext glContext = SDL_GL_CreateContext(window);
-  // TODO: Test that glContext was created successfully
+  if (!glContext) {
+    error.crash("No SDL OpenGL Context initialised.");
+  }
 
   // Tell us the number of vertex attributes allowed in bug reports
-  //
   int nrAttributes;
   glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &nrAttributes);
   error.log("Maximum num of vertex attributes supported: " +
@@ -74,17 +69,10 @@ int main(int argc, char **argv) {
   ShaderLoader shader(ROOT_DIR "data/shaders/vertex.glsl",
                       ROOT_DIR "data/shaders/fragment.glsl");
 
-  Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
+  Model backpack(std::string(ROOT_DIR) +
+                 std::string("data/models/backpack/backpack.obj"));
   Model cube(ROOT_DIR "data/models/cube/cube.obj");
   cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
-
-  // Mess with perspective
-  // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
-  // unit <-> 100 units
-  float width = 800;
-  float height = 600;
-  glm::mat4 Projection = glm::perspective(
-      glm::radians(45.0f), (float)width / (float)height, 0.1f, 100.0f);
 
   // Create player camera object
   PlayerCamera camera;
@@ -112,8 +100,9 @@ int main(int argc, char **argv) {
         if (keys[SDL_SCANCODE_ESCAPE])
           running = false;
       }
-      // TODO: Do something with keys lol
     };
+
+    // TODO: Run game here lol
     camera.tick();
 
     // Clear screen ready for next loop
@@ -130,12 +119,6 @@ int main(int argc, char **argv) {
 
     // Finally render everything
     shader.use();
-
-    // I think this is meant to be here but it breaks...
-    // shove vertex array into buffer
-    // glBindVertexArray(VAO);
-
-    // TODO: Run game here lol
 
     SDL_GL_SwapWindow(window);
   };
