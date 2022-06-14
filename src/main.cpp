@@ -75,7 +75,8 @@ int main(int argc, char **argv) {
                       ROOT_DIR "data/shaders/fragment.glsl");
 
   Model backpack(ROOT_DIR "data/models/backpack/backpack.obj");
-  // Model cube(ROOT_DIR "data/models/cube/cube.obj");
+  Model cube(ROOT_DIR "data/models/cube/cube.obj");
+  cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
 
   // Mess with perspective
   // Projection matrix : 45° Field of View, 4:3 ratio, display range : 0.1
@@ -124,7 +125,7 @@ int main(int argc, char **argv) {
     shader.setMat4("MVP", camera.getMVP());
 
     // Draw Meshes
-    // cube.draw(shader);
+    cube.draw(shader);
     backpack.draw(shader);
 
     // Finally render everything

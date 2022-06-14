@@ -24,6 +24,8 @@ private:
   unsigned int VAO, VBO, EBO;
   void setupMesh();
 
+  void unloadTextures();
+
 public:
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indices;
@@ -33,4 +35,6 @@ public:
 
   Mesh(std::vector<Vertex> vertices, std::vector<unsigned int> indices,
        std::vector<Texture> textures);
+
+  ~Mesh();
 };

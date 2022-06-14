@@ -33,13 +33,15 @@ private:
                                             aiTextureType type,
                                             std::string typeName);
 
+  void unloadTextures();
+
   std::string directory;
   unsigned int loadTextureFromFile(std::string texture, std::string directory);
   std::vector<Texture> textures_loaded;
 
 public:
   // Create a model from file
-  Model(char *path);
+  Model(std::string path);
   // Used to create a mesh out of a single mesh.
   Model(Mesh mesh);
   // Used to create a mesh out of multiple meshes.
@@ -50,4 +52,6 @@ public:
 
   // Translate the model
   void translate(glm::vec3 translation);
+
+  ~Model();
 };

@@ -1,6 +1,6 @@
 #include "Model.h"
 
-Model::Model(char *path) { loadModel(path); }
+Model::Model(std::string path) { loadModel(path); }
 Model::Model(Mesh mesh) { this->meshes.push_back(mesh); }
 Model::Model(std::vector<Mesh> meshes) { this->meshes = meshes; }
 
@@ -126,6 +126,7 @@ std::vector<Texture> Model::loadMaterialTextures(aiMaterial *material,
   }
   return textures;
 }
+
 unsigned int Model::loadTextureFromFile(std::string file,
                                         std::string directory) {
   // Use sdl2_image to load the texture.
@@ -165,3 +166,11 @@ unsigned int Model::loadTextureFromFile(std::string file,
 
   return texture;
 }
+
+void Model::unloadTextures() {
+  for (int i = 0; i < textures_loaded.size(); i++) {
+    glDeleteTextures(1, &textures_loaded[i].id);
+  }
+}
+
+Model::~Model() { this->unloadTextures(); }

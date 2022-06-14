@@ -63,3 +63,15 @@ void Mesh::draw(ShaderLoader &shader) {
   glDrawElements(GL_TRIANGLES, indices.size(), GL_UNSIGNED_INT, 0);
   glBindVertexArray(0);
 }
+
+void Mesh::unloadTextures() {
+  for (int i = 0; i < textures.size(); i++) {
+    glDeleteTextures(1, &textures[i].id);
+  }
+}
+
+// Until I have a firmer grasp on memory management, textures should only be
+// managed by the Model class
+Mesh::~Mesh() { // this->unloadTextures();
+  // error.log("Mesh destructor called");
+}
