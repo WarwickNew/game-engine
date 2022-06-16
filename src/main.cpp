@@ -72,7 +72,9 @@ int main(int argc, char **argv) {
   Model backpack(std::string(ROOT_DIR) +
                  std::string("data/models/backpack/backpack.obj"));
   Model cube(ROOT_DIR "data/models/cube/cube.obj");
+  Model gun(ROOT_DIR "data/models/gun/Cerberus_LP.FBX");
   cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
+  gun.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
 
   // Create player camera object
   PlayerCamera camera;
@@ -116,6 +118,7 @@ int main(int argc, char **argv) {
     // Draw Meshes
     cube.draw(shader);
     backpack.draw(shader);
+    gun.draw(shader);
 
     // Finally render everything
     shader.use();
