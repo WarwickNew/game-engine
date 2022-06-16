@@ -74,7 +74,9 @@ int main(int argc, char **argv) {
   Model cube(ROOT_DIR "data/models/cube/cube.obj");
   Model gun(ROOT_DIR "data/models/gun/Cerberus_LP.FBX");
   cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
-  gun.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
+  backpack.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
+  gun.translate(glm::vec3(0.0f, 1.0f, 0.0f));
+  gun.resize(glm::vec3(0.02f, 0.02f, 0.02f));
 
   // Create player camera object
   PlayerCamera camera;

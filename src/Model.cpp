@@ -20,6 +20,15 @@ void Model::translate(glm::vec3 translation) {
   // set model transform
   this->model = glm::translate(glm::mat4(1.0f), glm::vec3(this->position));
 }
+void Model::resize(glm::vec3 scale) {
+  // set worldspace postition
+  glm::mat4 transMatrix =
+      glm::translate(glm::mat4(1.0f), glm::vec3(this->position));
+  this->scale = scale;
+
+  // set model transform
+  this->model = glm::scale(transMatrix, glm::vec3(this->scale));
+}
 
 void Model::loadModel(std::string path) {
   // Attempt to import model data using assimp

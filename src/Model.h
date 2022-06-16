@@ -23,6 +23,8 @@ private:
 
   // Position
   glm::vec4 position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+  // Scale
+  glm::vec3 scale = glm::vec3(1.0f, 1.0f, 1.0f);
 
   // Load in models using assimp
   void loadModel(std::string path);
@@ -52,6 +54,8 @@ public:
 
   // Translate the model
   void translate(glm::vec3 translation);
+  // Scale the model
+  void resize(glm::vec3 scale);
 
   ~Model();
 };
