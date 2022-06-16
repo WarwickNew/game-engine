@@ -29,6 +29,9 @@ void Model::resize(glm::vec3 scale) {
   // set model transform
   this->model = glm::scale(transMatrix, glm::vec3(this->scale));
 }
+void Model::rotate(float angle, glm::vec3 axis) {
+  this->model = glm::rotate(this->model, angle, axis);
+}
 
 void Model::loadModel(std::string path) {
   // Attempt to import model data using assimp
