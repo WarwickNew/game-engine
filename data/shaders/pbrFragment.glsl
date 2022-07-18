@@ -8,10 +8,16 @@ in vec3 FragPos;
 // TODO: make temporary hard coded world/camera pos dynamic
 uniform vec3 WorldPos ;
 uniform vec3 CameraPos;
+uniform int tick;
 //vec3 WorldPos = vec3(0.0f, 0.0f, 0.0f);
 //vec3 CameraPos = vec3(0.0f, 0.0f, -1.0f);
 //TODO: make these values rely on associated textures.
 vec3 albedo = vec3(0.8f, 0.8f, 0.8f);
+
+//float metallic = sin(tick / 60 * 0.3f);
+//float roughness = sin(tick / 60 * 0.3f);
+//float ao = sin(tick / 60 * 0.8f);
+
 float metallic = 0.3f;
 float roughness = 0.3f;
 float ao = 0.8f;

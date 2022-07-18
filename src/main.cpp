@@ -115,9 +115,10 @@ int main(int argc, char **argv) {
     // Make every shader/rendering call from this point on use our shader
     // glUseProgram(shaderProgram);
 
-    // Send our glsl shader our mvp
+    // Send our glsl shader our camera information
     shader.setMat4("MVP", camera.getMVP());
     shader.setVec3("CameraPos", camera.getCameraPosition());
+    shader.setInt("tick", SDL_GetTicks());
 
     // Draw Meshes
     cube.draw(shader);
