@@ -29,8 +29,6 @@ uniform sampler2D texture_diffuse3;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
 
-uniform sampler2D ourTexture;
-
 // PBR functions from learnOpenGL.com
 const float PI = 3.14159265359;
 
@@ -74,7 +72,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 void main()
 {
-   albedo = vec3(texture(texture_diffuse1, ourTexCoord));
+   //albedo = vec3(texture(texture_diffuse1, ourTexCoord));
    // Establish ambient lighting
    float ambientStrength = 0.1;
 
@@ -87,7 +85,7 @@ void main()
    vec3 V = normalize(CameraPos - WorldPos);
 
    vec3 Lo = vec3(0.0f);
-   //TODO: Loop through this block for the number of lights
+   //TODO: Loop through the code up to ambient definition for each light
    vec3 L = normalize(lightPosition - WorldPos);
    vec3 H = normalize(V - L);
    float distance = length(lightPosition - WorldPos);

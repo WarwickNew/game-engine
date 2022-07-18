@@ -26,6 +26,10 @@ find_package(GLEW REQUIRED)
 find_package(GLM REQUIRED)
 find_package(assimp REQUIRED)
 
+if (assimp_VERSION VERSION_LESS "5.1")
+    message(FATAL_ERROR "Assimp ${assimp_VERSION} out of date, Assimp 5.1.0 or newer is required!")
+endif()
+
 include_directories(
     ${SDL2_INCLUDE_DIRS}
     ${SDL2_IMAGE_DIRS}
