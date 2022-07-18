@@ -4,9 +4,12 @@ out vec4 FragColor;
 in vec2 ourTexCoord;
 in vec3 ourNormCoord;
 in vec3 FragPos;
+
 // TODO: make temporary hard coded world/camera pos dynamic
-vec3 WorldPos = vec3(0.0f, 0.0f, 0.0f);
-vec3 CameraPos = vec3(0.0f, 0.0f, -1.0f);
+uniform vec3 WorldPos ;
+uniform vec3 CameraPos;
+//vec3 WorldPos = vec3(0.0f, 0.0f, 0.0f);
+//vec3 CameraPos = vec3(0.0f, 0.0f, -1.0f);
 //TODO: make these values rely on associated textures.
 vec3 albedo = vec3(0.8f, 0.8f, 0.8f);
 float metallic = 0.3f;
@@ -112,6 +115,6 @@ void main()
    color = color / (color + vec3(1.0));
    color = pow(color, vec3(1.0/2.2));
 
-   //FragColor = vec4(color, 1.0);
+   //FragColor = vec4(CameraPos, 1.0);
    FragColor = texture(texture_diffuse1, ourTexCoord) * vec4(color, 0.0);
 }

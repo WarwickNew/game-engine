@@ -7,6 +7,7 @@ Model::Model(std::vector<Mesh> meshes) { this->meshes = meshes; }
 void Model::draw(ShaderLoader &shader) {
   for (unsigned int i = 0; i < this->meshes.size(); i++) {
     shader.setMat4("Model", this->model);
+    shader.setVec3("WorldPos", this->position);
     this->meshes[i].draw(shader);
   }
 }

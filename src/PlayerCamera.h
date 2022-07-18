@@ -37,4 +37,5 @@ public:
   void tick();
 
   glm::mat4 getMVP();
+  glm::vec3 getCameraPosition();
 };

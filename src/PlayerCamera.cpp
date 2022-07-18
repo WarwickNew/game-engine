@@ -57,3 +57,4 @@ void PlayerCamera::tick() {
 }
 
 glm::mat4 PlayerCamera::getMVP() { return MVP; }
+glm::vec3 PlayerCamera::getCameraPosition() { return cameraPosition; }

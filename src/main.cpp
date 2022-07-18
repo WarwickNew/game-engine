@@ -66,7 +66,7 @@ int main(int argc, char **argv) {
   // Create event handling struct
   SDL_Event input;
 
-  ShaderLoader shader(ROOT_DIR "data/shaders/vertex.glsl",
+  ShaderLoader shader(ROOT_DIR "data/shaders/pbrVertex.glsl",
                       ROOT_DIR "data/shaders/pbrFragment.glsl");
 
   Model backpack(std::string(ROOT_DIR) +
@@ -117,6 +117,7 @@ int main(int argc, char **argv) {
 
     // Send our glsl shader our mvp
     shader.setMat4("MVP", camera.getMVP());
+    shader.setVec3("CameraPos", camera.getCameraPosition());
 
     // Draw Meshes
     cube.draw(shader);
