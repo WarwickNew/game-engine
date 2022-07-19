@@ -3,10 +3,10 @@ out vec4 FragColor;
 
 in vec2 ourTexCoord;
 in vec3 ourNormCoord;
-in vec3 FragPos;
+in vec3 WorldPos;
 
 // TODO: make temporary hard coded world/camera pos dynamic
-uniform vec3 WorldPos ;
+//uniform vec3 WorldPos ;
 uniform vec3 CameraPos;
 uniform int tick;
 //vec3 WorldPos = vec3(0.0f, 0.0f, 0.0f);
@@ -18,16 +18,17 @@ vec3 albedo = vec3(0.8f, 0.8f, 0.8f);
 //float roughness = sin(tick / 60 * 0.3f);
 //float ao = sin(tick / 60 * 0.8f);
 
-float metallic = 0.3f;
+//float metallic = 0.3f;
 float roughness = 0.3f;
 float ao = 0.8f;
 
 // Handle multiple textures from the Mesh Object (Might not even be used)
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_diffuse2;
-uniform sampler2D texture_diffuse3;
 uniform sampler2D texture_specular1;
 uniform sampler2D texture_specular2;
+uniform sampler2D texture_metalness1;
+uniform sampler2D texture_metalness2;
 
 // PBR functions from learnOpenGL.com
 const float PI = 3.14159265359;
@@ -73,6 +74,7 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 void main()
 {
    //albedo = vec3(texture(texture_diffuse1, ourTexCoord));
+   float metallic = texture(texture_metalness1, ourTexCoord).r;
    // Establish ambient lighting
    float ambientStrength = 0.1;
 
@@ -119,6 +121,7 @@ void main()
    color = color / (color + vec3(1.0));
    color = pow(color, vec3(1.0/2.2));
 
-   //FragColor = vec4(CameraPos, 1.0);
+   //FragColor = texture(texture_diffuse1, ourTexCoord);
+   //FragColor = texture(texture_metalness1, ourTexCoord);
    FragColor = texture(texture_diffuse1, ourTexCoord) * vec4(color, 0.0);
 }

@@ -8,7 +8,7 @@ uniform mat4 Model;
 
 out vec2 ourTexCoord;
 out vec3 ourNormCoord;
-out vec3 FragPos;
+out vec3 WorldPos;
 
 void main()
 {
@@ -17,5 +17,5 @@ void main()
    ourTexCoord = aTexCoord;
 
    // Calculate position of fragment
-   FragPos = vec3(Model * vec4(aPos, 1.0));
+   WorldPos = vec3(Model * vec4(aPos, 1.0));
 };

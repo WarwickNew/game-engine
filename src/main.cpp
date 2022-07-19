@@ -69,15 +69,17 @@ int main(int argc, char **argv) {
   ShaderLoader shader(ROOT_DIR "data/shaders/pbrVertex.glsl",
                       ROOT_DIR "data/shaders/pbrFragment.glsl");
 
-  Model backpack(std::string(ROOT_DIR) +
-                 std::string("data/models/backpack/backpack.obj"));
-  Model cube(ROOT_DIR "data/models/cube/cube.obj");
-  Model gun(ROOT_DIR "data/models/gun/Cerberus_LP.FBX");
-  cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
-  backpack.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
-  gun.translate(glm::vec3(0.0f, 1.0f, 0.0f));
-  gun.resize(glm::vec3(0.02f, 0.02f, 0.02f));
-  gun.rotate(glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+  // Model backpack(std::string(ROOT_DIR) +
+  //             std::string("data/models/backpack/backpack.obj"));
+  // Model cube(ROOT_DIR "data/models/cube/cube.obj");
+  // Model gun(ROOT_DIR "data/models/gun/Cerberus_LP.FBX");
+  Model boxbarrel(ROOT_DIR
+                  "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj");
+  // cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
+  // backpack.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
+  // gun.translate(glm::vec3(0.0f, 1.0f, 0.0f));
+  // gun.resize(glm::vec3(0.02f, 0.02f, 0.02f));
+  // gun.rotate(glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
 
   // Create player camera object
   PlayerCamera camera;
@@ -121,10 +123,10 @@ int main(int argc, char **argv) {
     shader.setInt("tick", SDL_GetTicks());
 
     // Draw Meshes
-    cube.draw(shader);
-    backpack.draw(shader);
-    gun.draw(shader);
-
+    // cube.draw(shader);
+    // backpack.draw(shader);
+    // gun.draw(shader);
+    boxbarrel.draw(shader);
     // Finally render everything
     shader.use();
 

@@ -7,7 +7,6 @@ Model::Model(std::vector<Mesh> meshes) { this->meshes = meshes; }
 void Model::draw(ShaderLoader &shader) {
   for (unsigned int i = 0; i < this->meshes.size(); i++) {
     shader.setMat4("Model", this->model);
-    shader.setVec3("WorldPos", this->position);
     this->meshes[i].draw(shader);
   }
 }
@@ -101,7 +100,15 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Texture> specularMaps = loadMaterialTextures(
         material, aiTextureType_SPECULAR, "texture_specular");
     textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
+    std::vector<Texture> metalMaps = loadMaterialTextures(
+        material, aiTextureType_METALNESS, "texture_metalness");
+    textures.insert(textures.end(), metalMaps.begin(), metalMaps.end());
   }
+  error.log("Model");
+  error.log(textures[0].path);
+  error.log(std::to_string(textures[0].id));
+  error.log(textures[1].path);
+  error.log(std::to_string(textures[1].id));
   return Mesh(vertices, indecies, textures);
 }
 
@@ -144,6 +151,7 @@ unsigned int Model::loadTextureFromFile(std::string file,
                                         std::string directory) {
   // Use sdl2_image to load the texture.
   unsigned int texture;
+  error.log(file);
   SDL_Surface *image = IMG_Load((directory + file).c_str());
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
