@@ -59,7 +59,7 @@ void Mesh::draw(ShaderLoader &shader) {
     error.log(("material." + name + number).c_str() + std::string(" ") +
               std::to_string(i) + " " + std::to_string(textures[i].id));
 
-    shader.setInt(("material." + name + number).c_str(), i);
+    shader.setInt((name + number).c_str(), i);
     glBindTexture(GL_TEXTURE_2D, textures[i].id);
     // error.log(std::to_string(i));
   }
