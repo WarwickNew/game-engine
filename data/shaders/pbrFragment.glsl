@@ -122,6 +122,7 @@ void main()
    color = pow(color, vec3(1.0/2.2));
 
    //FragColor = texture(texture_diffuse1, ourTexCoord);
-   //FragColor = texture(texture_metalness1, ourTexCoord);
-   FragColor = texture(texture_diffuse1, ourTexCoord) * vec4(color, 0.0);
+   FragColor = texture(texture_metalness1, ourTexCoord);
+   //FragColor = texture(texture_diffuse1, ourTexCoord) * vec4(color, 0.0);
+   //FragColor = vec4(CameraPos,1.0);
 }

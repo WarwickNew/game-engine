@@ -46,6 +46,10 @@ int main(int argc, char **argv) {
     return 1;
   }
 
+  // Set openGL version so RenderDoc works
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MAJOR_VERSION, 3);
+  SDL_GL_SetAttribute(SDL_GL_CONTEXT_MINOR_VERSION, 2);
+
   // Create glContext
   SDL_GLContext glContext = SDL_GL_CreateContext(window);
   if (!glContext) {
