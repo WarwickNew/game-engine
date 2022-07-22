@@ -74,13 +74,15 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 void main()
 {
    //albedo = vec3(texture(texture_diffuse1, ourTexCoord));
-   float metallic = texture(texture_metalness1, ourTexCoord).r;
+   // float metallic = 1 - texture(texture_metalness1, ourTexCoord).r;
+   float metallic = 1 - texture(texture_metalness1, ourTexCoord).r;
    // Establish ambient lighting
    float ambientStrength = 0.1;
 
    // Establish a temporary hard coded light position
-   vec3 lightPosition = vec3(1.0, 1.0, 1.0);
-   vec3 lightColor = vec3(1.0, 0.9, 1.0);
+   vec3 lightPosition = vec3( (sin(tick / 600.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
+   //vec3 lightColor = vec3(1.0, 1.0, 1.0) - sin(tick / 90);
+   vec3 lightColor = vec3(1.0, 1.0, 1.0);
 
    // Normal light maths
    vec3 N = normalize(ourNormCoord);
