@@ -14,5 +14,7 @@ map_Bump wooden box and barrel/boxes_DefaultMaterial_Normal.png
 map_Kd wooden box and barrel/boxes_DefaultMaterial_BaseColor.png
 map_Pr wooden box and barrel/boxes_DefaultMaterial_Roughness.jpg
 map_Pm wooden box and barrel/boxes_DefaultMaterial_Metallic.jpg
-map_Ps wooden box and barrel/boxes_DefaultMaterial_AO.jpg
-map_RMA wooden box and barrel/boxes_DefaultMaterial_ORM.jpg
+# map_Ps wooden box and barrel/boxes_DefaultMaterial_AO.jpg
+map_Ps wooden box and barrel/boxes_DefaultMaterial_RMA.jpg
+map_RMA wooden box and barrel/boxes_DefaultMaterial_RMA.jpg
+map_ORM wooden box and barrel/boxes_DefaultMaterial_ORM.jpg

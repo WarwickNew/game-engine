@@ -20,19 +20,13 @@ uniform int tick;
 
 //float metallic = 0.3f;
 //float roughness = 0.3f;
-float ao = 0.8f;
+//float ao = 0.8f;
 
 // Handle multiple textures from the Mesh Object (Might not even be used)
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_diffuse2;
-uniform sampler2D texture_specular1;
-uniform sampler2D texture_specular2;
-uniform sampler2D texture_metalness1;
-uniform sampler2D texture_metalness2;
-uniform sampler2D texture_roughness1;
-uniform sampler2D texture_roughness2;
-uniform sampler2D texture_sheen1;
-uniform sampler2D texture_sheen2;
+uniform sampler2D texture_rma1;
+
 
 // PBR functions from learnOpenGL.com
 const float PI = 3.14159265359;
@@ -41,6 +35,7 @@ vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
+
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a      = roughness*roughness;
@@ -77,16 +72,21 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 void main()
 {
-   vec3 albedo = vec3(texture(texture_diffuse1, ourTexCoord));
-   float metallic = 1 - texture(texture_metalness1, ourTexCoord).r;
-   float roughness = 1 - texture(texture_roughness1, ourTexCoord).r;
+   vec3 albedo;
+   albedo.r = pow(texture(texture_diffuse1, ourTexCoord).r, 2.2);
+   albedo.g = pow(texture(texture_diffuse1, ourTexCoord).g, 2.2);
+   albedo.b = pow(texture(texture_diffuse1, ourTexCoord).b, 2.2);
+   float roughness = texture(texture_rma1, ourTexCoord).r;
+   float metallic = texture(texture_rma1, ourTexCoord).g;
+   float ao = texture(texture_rma1, ourTexCoord).b;
+
    // Establish ambient lighting
    float ambientStrength = 0.1;
 
    // Establish a temporary hard coded light position
-   vec3 lightPosition = vec3( (sin(tick / 600.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
+   vec3 lightPosition = vec3( (sin(tick / 1000.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
    //vec3 lightColor = vec3(1.0, 1.0, 1.0) - sin(tick / 90);
-   vec3 lightColor = vec3(1.0, 1.0, 1.0);
+   vec3 lightColor  = vec3(23.47, 21.31, 20.79);
 
    // Normal light maths
    vec3 N = normalize(ourNormCoord);

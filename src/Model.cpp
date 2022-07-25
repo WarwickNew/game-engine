@@ -97,18 +97,16 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Texture> diffuseMaps = loadMaterialTextures(
         material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
-    std::vector<Texture> specularMaps = loadMaterialTextures(
-        material, aiTextureType_SPECULAR, "texture_specular");
-    textures.insert(textures.end(), specularMaps.begin(), specularMaps.end());
-    std::vector<Texture> metalMaps = loadMaterialTextures(
-        material, aiTextureType_METALNESS, "texture_metalness");
-    textures.insert(textures.end(), metalMaps.begin(), metalMaps.end());
-    std::vector<Texture> roughMaps = loadMaterialTextures(
-        material, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
-    textures.insert(textures.end(), roughMaps.begin(), roughMaps.end());
-    std::vector<Texture> sheenMaps = loadMaterialTextures(
-        material, aiTextureType_AMBIENT_OCCLUSION, "texture_sheen");
-    textures.insert(textures.end(), sheenMaps.begin(), sheenMaps.end());
+
+    // WARNING: As assimp updates to keep up with obj's mtl format
+    // aiTextureType_sheen may become incorrect. Using sheen because assimp maps
+    // map_Ps to both RMA  and sheen, and doesn't seem to use mtl's map_RMA
+    // anywhere and I can't find an RMA texture type in this version of the
+    // library.
+    // https://github.com/assimp/assimp/commit/19371af6e65608ffc968df646bf20278e6d99414
+    std::vector<Texture> rmaMaps =
+        loadMaterialTextures(material, aiTextureType_SHEEN, "texture_rma");
+    textures.insert(textures.end(), rmaMaps.begin(), rmaMaps.end());
   }
   return Mesh(vertices, indecies, textures);
 }
