@@ -72,49 +72,45 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
 {
-   // Establish ambient lighting
-   float ambientStrength = 0.1;
-
    // Establish a temporary hard coded light position
    vec3 lightPosition = vec3( (sin(tick / 1000.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
    //vec3 lightColor = vec3(1.0, 1.0, 1.0) - sin(tick / 90);
-   vec3 lightColor  = vec3(23.47, 21.31, 20.79);
+   vec3 lightColor  = vec3(13.47, 11.31, 10.79);
 
-   // Normal light maths
    vec3 N = normalize(ourNormCoord);
    vec3 V = normalize(CameraPos - WorldPos);
 
-   vec3 Lo = vec3(0.0f);
-   //TODO: Loop through the code up to ambient definition for each light
-   vec3 L = normalize(lightPosition - WorldPos);
-   vec3 H = normalize(V - L);
-   float distance = length(lightPosition - WorldPos);
-   float attenuation = 1.0 / (distance * distance);
-   vec3 radiance = lightColor * attenuation;
-
-   //Cook-Torrence BRDF
    vec3 F0 = vec3(0.04);
    F0 = mix(F0, albedo, metallic);
-   vec3 F = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
+   // reflectance equation
+   vec3 Lo = vec3(0.0);
+   // calculate per-light radiance
+   vec3 L = normalize(lightPosition - WorldPos);
+   vec3 H = normalize(V + L);
+   float distance    = length(lightPosition - WorldPos);
+   float attenuation = 1.0 / (distance * distance);
+   vec3 radiance     = lightColor * attenuation;
+
+   // cook-torrance brdf
    float NDF = DistributionGGX(N, H, roughness);
    float G   = GeometrySmith(N, V, L, roughness);
+   vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
 
-   vec3 numerator = NDF * G * F;
-   float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0)  + 0.0001;
-   vec3 specular = numerator / denominator;
-
-   //Next bit
    vec3 kS = F;
    vec3 kD = vec3(1.0) - kS;
-
    kD *= 1.0 - metallic;
 
+   vec3 numerator    = NDF * G * F;
+   float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.0001;
+   vec3 specular     = numerator / denominator;
+
+   // add to outgoing radiance Lo
    float NdotL = max(dot(N, L), 0.0);
    Lo += (kD * albedo / PI + specular) * radiance * NdotL;
 
    vec3 ambient = vec3(0.03) * albedo * ao;
-   vec3 color   = ambient + Lo;
+   vec3 color = ambient + Lo;
 
    color = color / (color + vec3(1.0));
    return pow(color, vec3(1.0/2.2));
@@ -130,5 +126,5 @@ void main()
    float metallic = texture(texture_rma1, ourTexCoord).g;
    float ao = texture(texture_rma1, ourTexCoord).b;
 
-   FragColor = vec4(PBR(albedo, roughness, metallic, ao), 0.0);
+   FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
 }
