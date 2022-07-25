@@ -97,6 +97,9 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Texture> diffuseMaps = loadMaterialTextures(
         material, aiTextureType_DIFFUSE, "texture_diffuse");
     textures.insert(textures.end(), diffuseMaps.begin(), diffuseMaps.end());
+    std::vector<Texture> normalMaps =
+        loadMaterialTextures(material, aiTextureType_NORMALS, "texture_normal");
+    textures.insert(textures.end(), normalMaps.begin(), normalMaps.end());
 
     // WARNING: As assimp updates to keep up with obj's mtl format
     // aiTextureType_sheen may become incorrect. Using sheen because assimp maps

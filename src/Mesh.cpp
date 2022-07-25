@@ -42,6 +42,7 @@ void Mesh::setupMesh() {
 void Mesh::draw(ShaderLoader &shader) {
   unsigned int diffuseNr = 1;
   unsigned int rmaNr = 1;
+  unsigned int normalNr = 1;
   for (unsigned int i = 0; i < textures.size(); i++) {
     // activate proper texture unit before binding
     glActiveTexture(GL_TEXTURE0 + i);
@@ -52,6 +53,8 @@ void Mesh::draw(ShaderLoader &shader) {
       number = std::to_string(diffuseNr++);
     else if (name == "texture_rma")
       number = std::to_string(rmaNr++);
+    else if (name == "texture_normal")
+      number = std::to_string(normalNr++);
 
     shader.setInt((name + number).c_str(), i);
     glBindTexture(GL_TEXTURE_2D, textures[i].id);

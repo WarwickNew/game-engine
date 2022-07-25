@@ -26,7 +26,7 @@ uniform int tick;
 uniform sampler2D texture_diffuse1;
 uniform sampler2D texture_diffuse2;
 uniform sampler2D texture_rma1;
-
+uniform sampler2D texture_normal1;
 
 // PBR functions from learnOpenGL.com
 const float PI = 3.14159265359;
@@ -70,16 +70,8 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 
-void main()
+vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
 {
-   vec3 albedo;
-   albedo.r = pow(texture(texture_diffuse1, ourTexCoord).r, 2.2);
-   albedo.g = pow(texture(texture_diffuse1, ourTexCoord).g, 2.2);
-   albedo.b = pow(texture(texture_diffuse1, ourTexCoord).b, 2.2);
-   float roughness = texture(texture_rma1, ourTexCoord).r;
-   float metallic = texture(texture_rma1, ourTexCoord).g;
-   float ao = texture(texture_rma1, ourTexCoord).b;
-
    // Establish ambient lighting
    float ambientStrength = 0.1;
 
@@ -125,7 +117,18 @@ void main()
    vec3 color   = ambient + Lo;
 
    color = color / (color + vec3(1.0));
-   color = pow(color, vec3(1.0/2.2));
+   return pow(color, vec3(1.0/2.2));
+}
 
-   FragColor = vec4(color, 0.0);
+void main()
+{
+   vec3 albedo;
+   albedo.r = pow(texture(texture_diffuse1, ourTexCoord).r, 2.2);
+   albedo.g = pow(texture(texture_diffuse1, ourTexCoord).g, 2.2);
+   albedo.b = pow(texture(texture_diffuse1, ourTexCoord).b, 2.2);
+   float roughness = texture(texture_rma1, ourTexCoord).r;
+   float metallic = texture(texture_rma1, ourTexCoord).g;
+   float ao = texture(texture_rma1, ourTexCoord).b;
+
+   FragColor = vec4(PBR(albedo, roughness, metallic, ao), 0.0);
 }
