@@ -43,6 +43,8 @@ void Mesh::draw(ShaderLoader &shader) {
   unsigned int diffuseNr = 1;
   unsigned int specularNr = 1;
   unsigned int metalNr = 1;
+  unsigned int roughNr = 1;
+  unsigned int sheenNr = 1;
   for (unsigned int i = 0; i < textures.size(); i++) {
     // activate proper texture unit before binding
     glActiveTexture(GL_TEXTURE0 + i);
@@ -55,9 +57,10 @@ void Mesh::draw(ShaderLoader &shader) {
       number = std::to_string(specularNr++);
     else if (name == "texture_metalness")
       number = std::to_string(metalNr++);
-
-    error.log(("material." + name + number).c_str() + std::string(" ") +
-              std::to_string(i) + " " + std::to_string(textures[i].id));
+    else if (name == "texture_roughness")
+      number = std::to_string(roughNr++);
+    else if (name == "texture_sheen")
+      number = std::to_string(sheenNr++);
 
     shader.setInt((name + number).c_str(), i);
     glBindTexture(GL_TEXTURE_2D, textures[i].id);

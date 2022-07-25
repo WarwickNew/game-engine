@@ -103,12 +103,13 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
     std::vector<Texture> metalMaps = loadMaterialTextures(
         material, aiTextureType_METALNESS, "texture_metalness");
     textures.insert(textures.end(), metalMaps.begin(), metalMaps.end());
+    std::vector<Texture> roughMaps = loadMaterialTextures(
+        material, aiTextureType_DIFFUSE_ROUGHNESS, "texture_roughness");
+    textures.insert(textures.end(), roughMaps.begin(), roughMaps.end());
+    std::vector<Texture> sheenMaps = loadMaterialTextures(
+        material, aiTextureType_AMBIENT_OCCLUSION, "texture_sheen");
+    textures.insert(textures.end(), sheenMaps.begin(), sheenMaps.end());
   }
-  error.log("Model");
-  error.log(textures[0].path);
-  error.log(std::to_string(textures[0].id));
-  error.log(textures[1].path);
-  error.log(std::to_string(textures[1].id));
   return Mesh(vertices, indecies, textures);
 }
 
@@ -151,7 +152,6 @@ unsigned int Model::loadTextureFromFile(std::string file,
                                         std::string directory) {
   // Use sdl2_image to load the texture.
   unsigned int texture;
-  error.log(file);
   SDL_Surface *image = IMG_Load((directory + file).c_str());
   if (image == nullptr) {
     error.crash("SDL2_image was unable to load a texture", IMG_GetError());
