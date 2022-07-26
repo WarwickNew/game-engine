@@ -8,7 +8,12 @@ uniform mat4 Model;
 
 out vec2 ourTexCoord;
 out vec3 ourNormCoord;
+
+//Pbr
 out vec3 WorldPos;
+
+//Normals
+out mat3 TBN;
 
 void main()
 {

@@ -126,5 +126,9 @@ void main()
    float metallic = texture(texture_rma1, ourTexCoord).g;
    float ao = texture(texture_rma1, ourTexCoord).b;
 
+   // Normals
+   // load and invert normal
+   vec3 normal = normalize(texture(texture_normal1, ourTexCoord).rgb * 2.0 - 1.0);
+
    FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
 }

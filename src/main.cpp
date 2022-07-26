@@ -79,6 +79,7 @@ int main(int argc, char **argv) {
   // Model gun(ROOT_DIR "data/models/gun/Cerberus_LP.FBX");
   Model boxbarrel(ROOT_DIR
                   "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj");
+  boxbarrel.translate(glm::vec3(0.0f, -1.0f, 0.0f));
   // cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
   // backpack.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
   // gun.translate(glm::vec3(0.0f, 1.0f, 0.0f));

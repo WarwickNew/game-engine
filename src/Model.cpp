@@ -15,10 +15,14 @@ void Model::translate(glm::vec3 translation) {
   // set worldspace postition
   glm::mat4 trans = glm::mat4(1.0f);
   trans = glm::translate(trans, translation);
-  this->position = trans * this->position;
+  glm::vec3 position = trans * this->position;
 
   // set model transform
-  this->model = glm::translate(glm::mat4(1.0f), glm::vec3(this->position));
+  this->model = glm::translate(glm::mat4(1.0f), glm::vec3(position));
+
+  // set position based on the current model
+  // TODO: turn this into a function if readability becomes an issue
+  this->position = model * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 void Model::resize(glm::vec3 scale) {
   // set worldspace postition
