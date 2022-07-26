@@ -126,6 +126,7 @@ int main(int argc, char **argv) {
     shader.setMat4("MVP", camera.getMVP());
     shader.setVec3("CameraPos", camera.getCameraPosition());
     shader.setInt("tick", SDL_GetTicks());
+    boxbarrel.rotate(0.001, glm::vec3(0, 1, 0));
 
     // Draw Meshes
     // cube.draw(shader);

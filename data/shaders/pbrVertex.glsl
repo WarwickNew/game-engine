@@ -13,13 +13,15 @@ out vec3 ourNormCoord;
 out vec3 WorldPos;
 
 //Normals
-out mat3 TBN;
+out mat4 TBN;
 
 void main()
 {
    gl_Position = MVP * Model * vec4(aPos, 1.0);
    ourNormCoord = aNormal;
    ourTexCoord = aTexCoord;
+
+   TBN = Model;
 
    // Calculate position of fragment
    WorldPos = vec3(Model * vec4(aPos, 1.0));
