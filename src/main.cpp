@@ -71,7 +71,8 @@ int main(int argc, char **argv) {
   SDL_Event input;
 
   ShaderLoader shader(ROOT_DIR "data/shaders/pbrVertex.glsl",
-                      ROOT_DIR "data/shaders/pbrFragment.glsl");
+                      ROOT_DIR "data/shaders/pbrFragment.glsl",
+                      ROOT_DIR "data/shaders/geometry.glsl");
 
   // Model backpack(std::string(ROOT_DIR) +
   //             std::string("data/models/backpack/backpack.obj"));

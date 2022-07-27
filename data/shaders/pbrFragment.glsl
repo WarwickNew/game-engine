@@ -1,10 +1,10 @@
 #version 330 core
 out vec4 FragColor;
 
-in vec2 ourTexCoord;
-in vec3 ourNormCoord;
+in vec2 texCoord;
+in vec3 normCoord;
 in vec3 WorldPos;
-in mat4 TBN;
+//in mat4 TBN;
 
 // TODO: make temporary hard coded world/camera pos dynamic
 //uniform vec3 WorldPos ;
@@ -34,48 +34,48 @@ const float PI = 3.14159265359;
 
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
-    return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
+   return F0 + (1.0 - F0) * pow(clamp(1.0 - cosTheta, 0.0, 1.0), 5.0);
 }
 
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
-    float a      = roughness*roughness;
-    float a2     = a*a;
-    float NdotH  = max(dot(N, H), 0.0);
-    float NdotH2 = NdotH*NdotH;
+   float a      = roughness*roughness;
+   float a2     = a*a;
+   float NdotH  = max(dot(N, H), 0.0);
+   float NdotH2 = NdotH*NdotH;
 
-    float num   = a2;
-    float denom = (NdotH2 * (a2 - 1.0) + 1.0);
-    denom = PI * denom * denom;
+   float num   = a2;
+   float denom = (NdotH2 * (a2 - 1.0) + 1.0);
+   denom = PI * denom * denom;
 
-    return num / denom;
+   return num / denom;
 }
 
 float GeometrySchlickGGX(float NdotV, float roughness)
 {
-    float r = (roughness + 1.0);
-    float k = (r*r) / 8.0;
+   float r = (roughness + 1.0);
+   float k = (r*r) / 8.0;
 
-    float num   = NdotV;
-    float denom = NdotV * (1.0 - k) + k;
+   float num   = NdotV;
+   float denom = NdotV * (1.0 - k) + k;
 
-    return num / denom;
+   return num / denom;
 }
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
-    float NdotV = max(dot(N, V), 0.0);
-    float NdotL = max(dot(N, L), 0.0);
-    float ggx2  = GeometrySchlickGGX(NdotV, roughness);
-    float ggx1  = GeometrySchlickGGX(NdotL, roughness);
+   float NdotV = max(dot(N, V), 0.0);
+   float NdotL = max(dot(N, L), 0.0);
+   float ggx2  = GeometrySchlickGGX(NdotV, roughness);
+   float ggx1  = GeometrySchlickGGX(NdotL, roughness);
 
-    return ggx1 * ggx2;
+   return ggx1 * ggx2;
 }
 
 vec3 normal(){
    // load and invert normal
-   vec3 normal = normalize(texture(texture_normal1, ourTexCoord).rgb * 2.0 - 1.0);
+   vec3 normal = normalize(texture(texture_normal1, texCoord).rgb * 2.0 - 1.0);
 
-   normal = (TBN * vec4(normal, 1.0)).xyz;
+   //normal = (TBN * vec4(normal, 1.0)).xyz;
 
    //TODO: Make the normal vector match the matrix of the rest of the model by
    //actually calculating the TBN
@@ -92,7 +92,7 @@ vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
    //vec3 lightColor = vec3(1.0, 1.0, 1.0) - sin(tick / 90);
    vec3 lightColor  = vec3(13.47, 11.31, 10.79);
 
-   vec3 N = normalize(ourNormCoord);
+   vec3 N = normalize(normCoord);
    vec3 V = normalize(CameraPos - WorldPos);
    N = (N + normal()) / 2;
    //N = normal(); For seeing if normal map tracks with light.
@@ -136,12 +136,12 @@ vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
 void main()
 {
    vec3 albedo;
-   albedo.r = pow(texture(texture_diffuse1, ourTexCoord).r, 2.2);
-   albedo.g = pow(texture(texture_diffuse1, ourTexCoord).g, 2.2);
-   albedo.b = pow(texture(texture_diffuse1, ourTexCoord).b, 2.2);
-   float roughness = texture(texture_rma1, ourTexCoord).r;
-   float metallic = texture(texture_rma1, ourTexCoord).g;
-   float ao = texture(texture_rma1, ourTexCoord).b;
+   albedo.r = pow(texture(texture_diffuse1, texCoord).r, 2.2);
+   albedo.g = pow(texture(texture_diffuse1, texCoord).g, 2.2);
+   albedo.b = pow(texture(texture_diffuse1, texCoord).b, 2.2);
+   float roughness = texture(texture_rma1, texCoord).r;
+   float metallic = texture(texture_rma1, texCoord).g;
+   float ao = texture(texture_rma1, texCoord).b;
 
    FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
 }

@@ -1,37 +1,54 @@
 #include "ShaderLoader.h"
 #include <iostream>
 
-ShaderLoader::ShaderLoader(const char *vertexPath, const char *fragmentPath) {
+// This function always expects vertex and fragment shaders, if a geometry
+// shader is present then it will also compile in that boi too.
+// TODO: Make this code more readable and reduce the number of if statements.
+void ShaderLoader::loadShader(const char *vertexPath, const char *fragmentPath,
+                              const char *geometryPath) {
   std::string vertexCode;
   std::string fragmentCode;
+  std::string geometryCode;
 
   std::ifstream vShaderFile;
   std::ifstream fShaderFile;
+  std::ifstream gShaderFile;
 
   vShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
   fShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
+  if (geometryPath != nullptr)
+    gShaderFile.exceptions(std::ifstream::failbit | std::ifstream::badbit);
   try {
     // Open Files
     vShaderFile.open(vertexPath);
     fShaderFile.open(fragmentPath);
-    std::stringstream vShaderStream, fShaderStream;
+    if (geometryPath != nullptr)
+      gShaderFile.open(geometryPath);
+    std::stringstream vShaderStream, fShaderStream, gShaderStream;
     // read file's buffer contents into streams
     vShaderStream << vShaderFile.rdbuf();
     fShaderStream << fShaderFile.rdbuf();
+    if (geometryPath != nullptr)
+      gShaderStream << gShaderFile.rdbuf();
     // close file handlers
     vShaderFile.close();
     fShaderFile.close();
+    if (geometryPath != nullptr)
+      gShaderFile.close();
     // convert stream into string
     vertexCode = vShaderStream.str();
     fragmentCode = fShaderStream.str();
+    if (geometryPath != nullptr)
+      geometryCode = gShaderStream.str();
   } catch (std::string e) {
     error.crash("Failed to read shaderfiles", e);
   }
   const char *vShaderCode = vertexCode.c_str();
   const char *fShaderCode = fragmentCode.c_str();
+  const char *gShaderCode = geometryCode.c_str();
 
   // Compile shaders
-  unsigned int vertex, fragment;
+  unsigned int vertex, fragment, geometry;
   int success;
   char infoLog[512];
 
@@ -60,10 +77,25 @@ ShaderLoader::ShaderLoader(const char *vertexPath, const char *fragmentPath) {
     error.crash("Fragment shader compilation failed", infoLog);
   }
 
+  // create geometry shader
+  if (geometryPath != nullptr) {
+    geometry = glCreateShader(GL_GEOMETRY_SHADER);
+    // compile fragment shader
+    glShaderSource(geometry, 1, &gShaderCode, NULL);
+    glCompileShader(geometry);
+    // https://learnopengl.com/Getting-started/Hello-Triangle
+    glGetShaderiv(geometry, GL_COMPILE_STATUS, &success);
+    if (!success) {
+      glGetShaderInfoLog(geometry, 512, NULL, infoLog);
+      error.crash("Geometry shader compilation failed", infoLog);
+    }
+  }
   // shader Program
   ID = glCreateProgram();
   glAttachShader(ID, vertex);
   glAttachShader(ID, fragment);
+  if (geometryPath != nullptr)
+    glAttachShader(ID, geometry);
   glLinkProgram(ID);
   // print linking errors if any
   glGetProgramiv(ID, GL_LINK_STATUS, &success);
@@ -76,6 +108,16 @@ ShaderLoader::ShaderLoader(const char *vertexPath, const char *fragmentPath) {
   // necessary
   glDeleteShader(vertex);
   glDeleteShader(fragment);
+  glDeleteShader(geometry);
+}
+
+ShaderLoader::ShaderLoader(const char *vertexPath, const char *fragmentPath,
+                           const char *geometryPath) {
+  this->loadShader(vertexPath, fragmentPath, geometryPath);
+}
+
+ShaderLoader::ShaderLoader(const char *vertexPath, const char *fragmentPath) {
+  this->loadShader(vertexPath, fragmentPath, nullptr);
 }
 
 void ShaderLoader::use() { glUseProgram(ID); }

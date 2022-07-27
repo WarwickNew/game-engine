@@ -16,9 +16,14 @@ private:
   unsigned int ID;
   Error error = Error("ShaderLoader");
 
+  void loadShader(const char *vertexPath, const char *fragmentPath,
+                  const char *geometryPath);
+
 public:
   // constructor builds shader
   ShaderLoader(const char *vertexPath, const char *fragmentPath);
+  ShaderLoader(const char *vertexPath, const char *fragmentPath,
+               const char *geometryPath);
 
   // use the shader
   void use();

@@ -6,23 +6,20 @@ layout (location = 2) in vec2 aTexCoord;
 uniform mat4 MVP;
 uniform mat4 Model;
 
-out vec2 ourTexCoord;
-out vec3 ourNormCoord;
+out vec2 gtexCoord;
+out vec3 gnormCoord;
 
 //Pbr
-out vec3 WorldPos;
+out vec3 gWorldPos;
 
 //Normals
-out mat4 TBN;
 
 void main()
 {
    gl_Position = MVP * Model * vec4(aPos, 1.0);
-   ourNormCoord = aNormal;
-   ourTexCoord = aTexCoord;
-
-   TBN = Model;
+   gnormCoord = aNormal;
+   gtexCoord = aTexCoord;
 
    // Calculate position of fragment
-   WorldPos = vec3(Model * vec4(aPos, 1.0));
+   gWorldPos = vec3(Model * vec4(aPos, 1.0));
 };
