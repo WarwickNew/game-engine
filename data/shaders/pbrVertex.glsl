@@ -12,8 +12,6 @@ out vec3 gnormCoord;
 //Pbr
 out vec3 gWorldPos;
 
-//Normals
-
 void main()
 {
    gl_Position = MVP * Model * vec4(aPos, 1.0);

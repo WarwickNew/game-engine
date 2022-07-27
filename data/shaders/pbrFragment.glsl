@@ -4,7 +4,7 @@ out vec4 FragColor;
 in vec2 texCoord;
 in vec3 normCoord;
 in vec3 WorldPos;
-//in mat4 TBN;
+in mat3 TBN;
 
 // TODO: make temporary hard coded world/camera pos dynamic
 //uniform vec3 WorldPos ;
@@ -73,12 +73,8 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 
 vec3 normal(){
    // load and invert normal
-   vec3 normal = normalize(texture(texture_normal1, texCoord).rgb * 2.0 - 1.0);
-
-   //normal = (TBN * vec4(normal, 1.0)).xyz;
-
-   //TODO: Make the normal vector match the matrix of the rest of the model by
-   //actually calculating the TBN
+   vec3 normal = texture(texture_normal1, texCoord).rgb * 2.0 - 1.0;
+   normal = normalize(TBN * normal);
 
    return normal;
 }
@@ -94,8 +90,8 @@ vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
 
    vec3 N = normalize(normCoord);
    vec3 V = normalize(CameraPos - WorldPos);
-   N = (N + normal()) / 2;
-   //N = normal(); For seeing if normal map tracks with light.
+   //N = (N + normal()) / 2;
+   //N = normal(); //For seeing if normal map tracks with light.
 
    vec3 F0 = vec3(0.04);
    F0 = mix(F0, albedo, metallic);
@@ -143,5 +139,6 @@ void main()
    float metallic = texture(texture_rma1, texCoord).g;
    float ao = texture(texture_rma1, texCoord).b;
 
-   FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
+   //FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
+   FragColor = vec4(normal(), 1.0);
 }
