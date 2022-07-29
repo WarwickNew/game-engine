@@ -1,6 +1,6 @@
 #version 330 core
 layout (triangles) in;
-layout (triangle_strip) out;
+layout (triangle_strip, max_vertices = 3) out;
 
 uniform mat4 Model;
 
@@ -12,7 +12,16 @@ out vec2 texCoord;
 out vec3 normCoord;
 out vec3 WorldPos;
 
-out mat3 TBN;
+vec3 lightPosition = vec3(1, 1, 2);
+
+uniform vec3 CameraPos;
+
+out GS_OUT {
+   mat3 TBN;
+   vec3 tangentLightPos;
+   vec3 tangentViewPos;
+   vec3 tangentFragPos;
+} gs_out;
 
 void main(void)
 {
@@ -38,20 +47,24 @@ void main(void)
    // [ddTxBxTyByTzBz]=1ΔU1ΔV2−ΔU2ΔV1[ΔV2−ΔU2−ΔV1ΔU1][E1xE2xE1yE2yE1zE2z]
    // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
 
-   float f = 1.0 / (duv1.x * duv2.y - duv2.x * duv1.y);
+   float invDet = 1.0 / (duv1.x * duv2.y - duv2.x * duv1.y);
 
-   float tx = f * (duv2.y * edge1.x - duv1.y * edge2.x);
-   float ty = f * (duv2.y * edge1.y - duv1.y * edge2.y);
-   float tz = f * (duv2.y * edge1.z - duv1.y * edge2.z);
-
-   vec3 tangent = vec3(tx, ty, tz);
+   vec3 tangent = vec3 (invDet * (duv2.y * edge1 - duv1.y * edge2));
+   vec3 bitangent = vec3 (invDet * (-duv2.x * edge1 - duv1.x * edge2));
 
    //Calculate TBN
-   vec3 T = normalize(vec3(Model * vec4(tangent, 0.0)));
-   vec3 N = normalize(vec3(Model * vec4(gnormCoord[0], 0.0)));
-   vec3 B = cross(N, T);
+   //mat3 normalMatrix = transpose(inverse(mat3(Model)));
 
-   TBN = mat3(T, B, N);
+   vec3 T = normalize(vec3(Model * vec4(tangent, 0.0f)));
+   vec3 B = normalize(vec3(Model * vec4(bitangent, 0.0f)));
+   vec3 N = normalize(vec3(Model * vec4(cross(edge2, edge1), 0.0f)));
+
+   mat3 TBN = transpose(mat3(T, B, N));
+   gs_out.TBN = TBN;
+
+   gs_out.tangentLightPos = TBN * lightPosition;
+   gs_out.tangentViewPos = TBN * CameraPos;
+   gs_out.tangentFragPos = TBN * gWorldPos[0];
 
    // send data to Fragment Shader
    gl_Position = gl_in[0].gl_Position;
@@ -64,12 +77,16 @@ void main(void)
    texCoord = gtexCoord[1];
    normCoord = gnormCoord[1];
    WorldPos = gWorldPos[1];
+
+   gs_out.tangentFragPos = TBN * gWorldPos[1];
    EmitVertex();
 
    gl_Position = gl_in[2].gl_Position;
    texCoord = gtexCoord[2];
    normCoord = gnormCoord[2];
    WorldPos = gWorldPos[2];
+
+   gs_out.tangentFragPos = TBN * gWorldPos[2];
    EmitVertex();
    EndPrimitive();
 };

@@ -4,6 +4,14 @@ out vec4 FragColor;
 in vec2 texCoord;
 in vec3 normCoord;
 in vec3 WorldPos;
+
+in GS_OUT {
+   mat3 TBN;
+   vec3 tangentLightPos;
+   vec3 tangentViewPos;
+   vec3 tangentFragPos;
+} from_gs;
+
 in mat3 TBN;
 
 // TODO: make temporary hard coded world/camera pos dynamic
@@ -71,27 +79,34 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
    return ggx1 * ggx2;
 }
 
-vec3 normal(){
+vec3 normalMapNormal(){
    // load and invert normal
-   vec3 normal = texture(texture_normal1, texCoord).rgb * 2.0 - 1.0;
-   normal = normalize(TBN * normal);
+   vec3 normal = normalize(texture(texture_normal1, texCoord).rgb * 2.0 - 1.0);
 
-   return normal;
+   vec3 lightDir = normalize(from_gs.tangentLightPos - from_gs.tangentFragPos);
+   vec3 viewDir  = normalize(from_gs.tangentViewPos - from_gs.tangentFragPos);
+   vec3 reflectDir = reflect(-lightDir, normal);
+   vec3 halfwayDir = normalize(lightDir + viewDir);
+   float spec = pow(max(dot(normal, halfwayDir), 0.0),32.0);
+
+   vec3 normMapSpecular = vec3(0.2) * spec;
+
+   return normMapSpecular;
 }
 
 
 vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
 {
    // Establish a temporary hard coded light position
-   vec3 lightPosition = vec3( 1,  1, 2);
+   vec3 lightPosition = vec3(1, 1, 2);
    //vec3 lightPosition = vec3( (sin(tick / 1000.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
    //vec3 lightColor = vec3(1.0, 1.0, 1.0) - sin(tick / 90);
    vec3 lightColor  = vec3(13.47, 11.31, 10.79);
 
    vec3 N = normalize(normCoord);
    vec3 V = normalize(CameraPos - WorldPos);
-   //N = (N + normal()) / 2;
-   //N = normal(); //For seeing if normal map tracks with light.
+   //N = (N + normalMapNormal()) / 2;
+   //N = normalMapNormal(); //For seeing if normal map tracks with light.
 
    vec3 F0 = vec3(0.04);
    F0 = mix(F0, albedo, metallic);
@@ -140,5 +155,8 @@ void main()
    float ao = texture(texture_rma1, texCoord).b;
 
    //FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
-   FragColor = vec4(normal(), 1.0);
+   FragColor = vec4(PBR(albedo, roughness, metallic, ao) + normalMapNormal(), 1.0);
+   //FragColor = vec4(normalMapNormal(), 1.0);
+   //FragColor = vec4(vec3(0.5) + normalMapNormal(), 1.0);
+   //FragColor = vec4(vec3(0.5), 1.0);
 }
