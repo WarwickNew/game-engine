@@ -155,8 +155,8 @@ void main()
    float ao = texture(texture_rma1, texCoord).b;
 
    //FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
-   FragColor = vec4(PBR(albedo, roughness, metallic, ao) + normalMapNormal(), 1.0);
+   //FragColor = vec4(PBR(albedo, roughness, metallic, ao) + normalMapNormal(), 1.0);
    //FragColor = vec4(normalMapNormal(), 1.0);
-   //FragColor = vec4(vec3(0.5) + normalMapNormal(), 1.0);
+   FragColor = vec4(vec3(0.1) + normalMapNormal()*5, 1.0);
    //FragColor = vec4(vec3(0.5), 1.0);
 }

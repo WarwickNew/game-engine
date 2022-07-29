@@ -27,37 +27,25 @@ void main(void)
 {
    // Calculate Normal Map stuff
 
-   // Real space triangle
-   vec3 p1 = gl_in[0].gl_Position.xyz;
-   vec3 p2 = gl_in[1].gl_Position.xyz;
-   vec3 p3 = gl_in[2].gl_Position.xyz;
+   // Edges of the triangle
+   vec3 edge0 = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+   vec3 edge1 = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
+   // Lengths of UV differences
+   vec2 deltaUV0 = gtexCoord[1] - gtexCoord[0];
+   vec2 deltaUV1 = gtexCoord[2] - gtexCoord[0];
 
-   // Normal texture space triangle
-   vec2 uv1 = gtexCoord[0];
-   vec2 uv2 = gtexCoord[1];
-   vec2 uv3 = gtexCoord[2];
+   // one over the determinant
+   float invDet = 1.0f / (deltaUV0.x * deltaUV1.y - deltaUV1.x * deltaUV0.y);
 
-   // Calculate edge translation vectors duv stands for delta uv
-   vec3 edge1 = p2 - p1;
-   vec3 edge2 = p3 - p1;
-   vec2 duv1 = uv2 - uv1;
-   vec2 duv2 = uv3 - uv1;
-
-   // Calculation of tangents and bi tangents
-   // [ddTxBxTyByTzBz]=1ΔU1ΔV2−ΔU2ΔV1[ΔV2−ΔU2−ΔV1ΔU1][E1xE2xE1yE2yE1zE2z]
-   // https://learnopengl.com/Advanced-Lighting/Normal-Mapping
-
-   float invDet = 1.0 / (duv1.x * duv2.y - duv2.x * duv1.y);
-
-   vec3 tangent = vec3 (invDet * (duv2.y * edge1 - duv1.y * edge2));
-   vec3 bitangent = vec3 (invDet * (-duv2.x * edge1 - duv1.x * edge2));
+   vec3 tangent = vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
+   vec3 bitangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
 
    //Calculate TBN
    //mat3 normalMatrix = transpose(inverse(mat3(Model)));
 
    vec3 T = normalize(vec3(Model * vec4(tangent, 0.0f)));
    vec3 B = normalize(vec3(Model * vec4(bitangent, 0.0f)));
-   vec3 N = normalize(vec3(Model * vec4(cross(edge2, edge1), 0.0f)));
+   vec3 N = normalize(vec3(Model * vec4(cross(edge1, edge0), 0.0f)));
 
    mat3 TBN = transpose(mat3(T, B, N));
    gs_out.TBN = TBN;
