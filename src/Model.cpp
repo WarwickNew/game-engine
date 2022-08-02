@@ -21,7 +21,6 @@ void Model::translate(glm::vec3 translation) {
   this->model = glm::translate(glm::mat4(1.0f), glm::vec3(position));
 
   // set position based on the current model
-  // TODO: turn this into a function if readability becomes an issue
   this->position = model * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 void Model::resize(glm::vec3 scale) {

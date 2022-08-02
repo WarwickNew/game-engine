@@ -1,4 +1,5 @@
 #version 330 core
+uniform mat4 MVP;
 out vec4 FragColor;
 
 in vec2 texCoord;
@@ -10,6 +11,7 @@ in GS_OUT {
    vec3 tangentLightPos;
    vec3 tangentViewPos;
    vec3 tangentFragPos;
+   vec3 tangentNormPos;
 } from_gs;
 
 in mat3 TBN;
@@ -17,7 +19,7 @@ in mat3 TBN;
 // TODO: make temporary hard coded world/camera pos dynamic
 //uniform vec3 WorldPos ;
 uniform vec3 CameraPos;
-uniform int tick;
+//uniform int tick;
 //vec3 WorldPos = vec3(0.0f, 0.0f, 0.0f);
 //vec3 CameraPos = vec3(0.0f, 0.0f, -1.0f);
 //TODO: make these values rely on associated textures.
@@ -89,7 +91,7 @@ vec3 normalMapNormal(){
    vec3 halfwayDir = normalize(lightDir + viewDir);
    float spec = pow(max(dot(normal, halfwayDir), 0.0),32.0);
 
-   vec3 normMapSpecular = vec3(0.2) * spec;
+   vec3 normMapSpecular = vec3(1.0) * spec;
 
    return normMapSpecular;
 }
@@ -98,13 +100,24 @@ vec3 normalMapNormal(){
 vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
 {
    // Establish a temporary hard coded light position
-   vec3 lightPosition = vec3(1, 1, 2);
+   //vec3 lightPosition = vec3(1, 1, 2);
+   //vec3 lightPosition = vec3(1, 1, 2);
+   vec3 lightPosition = from_gs.tangentLightPos;
    //vec3 lightPosition = vec3( (sin(tick / 1000.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
    //vec3 lightColor = vec3(1.0, 1.0, 1.0) - sin(tick / 90);
    vec3 lightColor  = vec3(13.47, 11.31, 10.79);
 
-   vec3 N = normalize(normCoord);
-   vec3 V = normalize(CameraPos - WorldPos);
+   //vec3 camPos = CameraPos;
+   vec3 camPos = from_gs.tangentViewPos;
+   //vec3 fragPos = WorldPos;
+   vec3 fragPos = from_gs.tangentFragPos;
+
+   //vec3 N = normalize(normCoord);
+   //vec3 N = normalize(from_gs.tangentNormPos);
+   vec3 N = normalize(texture(texture_normal1, texCoord).xyz * 2.0 - 1.0);
+   vec3 V = normalize(camPos - fragPos);
+   //N = (N + normalize(texture(texture_normal1, texCoord).xyz * 2.0 - 1.0))/2;
+   //N = (N + normalize(texture(texture_normal1, texCoord).zyx * 2.0 - 1.0))/2;
    //N = (N + normalMapNormal()) / 2;
    //N = normalMapNormal(); //For seeing if normal map tracks with light.
 
@@ -114,9 +127,9 @@ vec3 PBR(vec3 albedo, float roughness, float metallic, float ao)
    // reflectance equation
    vec3 Lo = vec3(0.0);
    // calculate per-light radiance
-   vec3 L = normalize(lightPosition - WorldPos);
+   vec3 L = normalize(lightPosition - fragPos);
    vec3 H = normalize(V + L);
-   float distance    = length(lightPosition - WorldPos);
+   float distance    = length(lightPosition - fragPos);
    float attenuation = 1.0 / (distance * distance);
    vec3 radiance     = lightColor * attenuation;
 
@@ -154,9 +167,9 @@ void main()
    float metallic = texture(texture_rma1, texCoord).g;
    float ao = texture(texture_rma1, texCoord).b;
 
-   //FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
+   FragColor = vec4(PBR(albedo, roughness, metallic, ao), 1.0);
    //FragColor = vec4(PBR(albedo, roughness, metallic, ao) + normalMapNormal(), 1.0);
    //FragColor = vec4(normalMapNormal(), 1.0);
-   FragColor = vec4(vec3(0.1) + normalMapNormal()*5, 1.0);
+   //FragColor = vec4(vec3(0.1) + normalMapNormal()*5, 1.0);
    //FragColor = vec4(vec3(0.5), 1.0);
 }

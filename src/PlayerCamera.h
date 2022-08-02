@@ -26,8 +26,11 @@ private:
   // Mouse position
   int mouseX, mouseY;
 
-  // Camera position
+  // Camera matrix
   glm::mat4 MVP;
+  glm::mat4 model;
+  glm::mat4 view;
+  glm::mat4 projection;
 
 public:
   PlayerCamera();
@@ -37,5 +40,8 @@ public:
   void tick();
 
   glm::mat4 getMVP();
+  glm::mat4 getModel();
+  glm::mat4 getView();
+  glm::mat4 getProjection();
   glm::vec3 getCameraPosition();
 };

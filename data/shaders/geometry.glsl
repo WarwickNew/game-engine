@@ -7,6 +7,7 @@ uniform mat4 Model;
 in vec2 gtexCoord[];
 in vec3 gnormCoord[];
 in vec3 gWorldPos[];
+uniform mat4 MVP;
 
 out vec2 texCoord;
 out vec3 normCoord;
@@ -21,18 +22,27 @@ out GS_OUT {
    vec3 tangentLightPos;
    vec3 tangentViewPos;
    vec3 tangentFragPos;
+   vec3 tangentNormPos;
 } gs_out;
+
+in DATA {
+   vec3 normal;
+   vec2 texCoord;
+   mat4 camProj;
+   mat4 modelProj;
+   vec3 lightPos;
+   vec3 camPos;
+} data_in[];
 
 void main(void)
 {
    // Calculate Normal Map stuff
-
    // Edges of the triangle
    vec3 edge0 = gl_in[1].gl_Position.xyz - gl_in[0].gl_Position.xyz;
    vec3 edge1 = gl_in[2].gl_Position.xyz - gl_in[0].gl_Position.xyz;
    // Lengths of UV differences
-   vec2 deltaUV0 = gtexCoord[1] - gtexCoord[0];
-   vec2 deltaUV1 = gtexCoord[2] - gtexCoord[0];
+   vec2 deltaUV0 = data_in[1].texCoord - data_in[0].texCoord;
+   vec2 deltaUV1 = data_in[2].texCoord - data_in[0].texCoord;
 
    // one over the determinant
    float invDet = 1.0f / (deltaUV0.x * deltaUV1.y - deltaUV1.x * deltaUV0.y);
@@ -40,41 +50,38 @@ void main(void)
    vec3 tangent = vec3(invDet * (deltaUV1.y * edge0 - deltaUV0.y * edge1));
    vec3 bitangent = vec3(invDet * (-deltaUV1.x * edge0 + deltaUV0.x * edge1));
 
-   //Calculate TBN
-   //mat3 normalMatrix = transpose(inverse(mat3(Model)));
+   vec3 T = normalize(vec3(data_in[0].modelProj * vec4(tangent, 0.0f)));
+   vec3 B = normalize(vec3(data_in[0].modelProj * vec4(bitangent, 0.0f)));
+   vec3 N = normalize(vec3(data_in[0].modelProj * vec4(cross(edge0, edge1), 0.0f)));
 
-   vec3 T = normalize(vec3(Model * vec4(tangent, 0.0f)));
-   vec3 B = normalize(vec3(Model * vec4(bitangent, 0.0f)));
-   vec3 N = normalize(vec3(Model * vec4(cross(edge1, edge0), 0.0f)));
-
-   mat3 TBN = transpose(mat3(T, B, N));
+   mat3 TBN = mat3(T, B, N);
+   // TBN is an orthogonal matrix and so its inverse is equal to its transpose
+   TBN = transpose(TBN);
    gs_out.TBN = TBN;
 
-   gs_out.tangentLightPos = TBN * lightPosition;
-   gs_out.tangentViewPos = TBN * CameraPos;
-   gs_out.tangentFragPos = TBN * gWorldPos[0];
-
    // send data to Fragment Shader
-   gl_Position = gl_in[0].gl_Position;
-   texCoord = gtexCoord[0];
-   normCoord = gnormCoord[0];
-   WorldPos = gWorldPos[0];
+   gl_Position = data_in[0].camProj * gl_in[0].gl_Position;
+   gs_out.tangentNormPos = data_in[0].normal;
+   texCoord = data_in[0].texCoord;
+   gs_out.tangentFragPos = TBN * gl_in[0].gl_Position.xyz;
+   gs_out.tangentViewPos = TBN * data_in[0].camPos;
+   gs_out.tangentLightPos = TBN * data_in[0].lightPos;
    EmitVertex();
 
-   gl_Position = gl_in[1].gl_Position;
-   texCoord = gtexCoord[1];
-   normCoord = gnormCoord[1];
-   WorldPos = gWorldPos[1];
-
-   gs_out.tangentFragPos = TBN * gWorldPos[1];
+   gl_Position = data_in[1].camProj * gl_in[1].gl_Position;
+   gs_out.tangentNormPos = data_in[1].normal;
+   texCoord = data_in[1].texCoord;
+   gs_out.tangentFragPos = TBN * gl_in[1].gl_Position.xyz;
+   gs_out.tangentViewPos = TBN * data_in[1].camPos;
+   gs_out.tangentLightPos = TBN * data_in[1].lightPos;
    EmitVertex();
 
-   gl_Position = gl_in[2].gl_Position;
-   texCoord = gtexCoord[2];
-   normCoord = gnormCoord[2];
-   WorldPos = gWorldPos[2];
-
-   gs_out.tangentFragPos = TBN * gWorldPos[2];
+   gl_Position = data_in[2].camProj * gl_in[2].gl_Position;
+   gs_out.tangentNormPos = data_in[2].normal;
+   texCoord = data_in[2].texCoord;
+   gs_out.tangentFragPos = TBN * gl_in[2].gl_Position.xyz;
+   gs_out.tangentViewPos = TBN * data_in[2].camPos;
+   gs_out.tangentLightPos = TBN * data_in[2].lightPos;
    EmitVertex();
    EndPrimitive();
 };

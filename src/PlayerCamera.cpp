@@ -45,16 +45,18 @@ void PlayerCamera::tick() {
   glm::vec3 cameraTarget = cameraPosition + cameraForward;
 
   // MVP stuff
-  glm::mat4 model = glm::mat4(1.0f);
+  model = glm::mat4(1.0f);
 
-  glm::mat4 view;
   view = glm::lookAt(cameraPosition, cameraTarget, up);
 
-  glm::mat4 projection = glm::perspective(
-      glm::radians(45.0f), (float)800 / (float)600, 0.1f, 100.0f);
+  projection = glm::perspective(glm::radians(45.0f), (float)800 / (float)600,
+                                0.1f, 100.0f);
 
   MVP = projection * view * model;
 }
 
 glm::mat4 PlayerCamera::getMVP() { return MVP; }
+glm::mat4 PlayerCamera::getModel() { return model; }
+glm::mat4 PlayerCamera::getView() { return view; }
+glm::mat4 PlayerCamera::getProjection() { return projection; }
 glm::vec3 PlayerCamera::getCameraPosition() { return cameraPosition; }
