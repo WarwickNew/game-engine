@@ -2,27 +2,16 @@
 layout (triangles) in;
 layout (triangle_strip, max_vertices = 3) out;
 
-uniform mat4 Model;
-
-in vec2 gtexCoord[];
-in vec3 gnormCoord[];
-in vec3 gWorldPos[];
-uniform mat4 MVP;
-
 out vec2 texCoord;
-out vec3 normCoord;
-out vec3 WorldPos;
 
 vec3 lightPosition = vec3(1, 1, 2);
 
 uniform vec3 CameraPos;
 
 out GS_OUT {
-   mat3 TBN;
    vec3 tangentLightPos;
    vec3 tangentViewPos;
    vec3 tangentFragPos;
-   vec3 tangentNormPos;
 } gs_out;
 
 in DATA {
@@ -57,11 +46,9 @@ void main(void)
    mat3 TBN = mat3(T, B, N);
    // TBN is an orthogonal matrix and so its inverse is equal to its transpose
    TBN = transpose(TBN);
-   gs_out.TBN = TBN;
 
    // send data to Fragment Shader
    gl_Position = data_in[0].camProj * gl_in[0].gl_Position;
-   gs_out.tangentNormPos = data_in[0].normal;
    texCoord = data_in[0].texCoord;
    gs_out.tangentFragPos = TBN * gl_in[0].gl_Position.xyz;
    gs_out.tangentViewPos = TBN * data_in[0].camPos;
@@ -69,7 +56,6 @@ void main(void)
    EmitVertex();
 
    gl_Position = data_in[1].camProj * gl_in[1].gl_Position;
-   gs_out.tangentNormPos = data_in[1].normal;
    texCoord = data_in[1].texCoord;
    gs_out.tangentFragPos = TBN * gl_in[1].gl_Position.xyz;
    gs_out.tangentViewPos = TBN * data_in[1].camPos;
@@ -77,7 +63,6 @@ void main(void)
    EmitVertex();
 
    gl_Position = data_in[2].camProj * gl_in[2].gl_Position;
-   gs_out.tangentNormPos = data_in[2].normal;
    texCoord = data_in[2].texCoord;
    gs_out.tangentFragPos = TBN * gl_in[2].gl_Position.xyz;
    gs_out.tangentViewPos = TBN * data_in[2].camPos;

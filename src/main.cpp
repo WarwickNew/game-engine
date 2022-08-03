@@ -70,8 +70,8 @@ int main(int argc, char **argv) {
   // Create event handling struct
   SDL_Event input;
 
-  ShaderLoader shader(ROOT_DIR "data/shaders/pbrVertex.glsl",
-                      ROOT_DIR "data/shaders/pbrFragment.glsl",
+  ShaderLoader shader(ROOT_DIR "data/shaders/vertex.glsl",
+                      ROOT_DIR "data/shaders/fragment.glsl",
                       ROOT_DIR "data/shaders/geometry.glsl");
 
   // Model backpack(std::string(ROOT_DIR) +
@@ -125,9 +125,6 @@ int main(int argc, char **argv) {
 
     // Send our glsl shader our camera information
     shader.setMat4("MVP", camera.getMVP());
-    // shader.setMat4("Model", camera.getModel());
-    // shader.setMat4("View", camera.getView());
-    // shader.setMat4("Projection", camera.getProjection());
 
     shader.setVec3("CameraPos", camera.getCameraPosition());
     shader.setInt("tick", SDL_GetTicks());
