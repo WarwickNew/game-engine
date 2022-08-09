@@ -3,10 +3,16 @@
 .cmake/
 CMakeCache.txt
 CMakeFiles/
-Game
+bin/
+lib/
 Makefile
 cmake_install.cmake
 compile_commands.json
+# FastNoise2 extra build files
+CPM_modules/
+NoiseTool.ini
+_deps/
+cpm-package-lock.cmake
 
 # Ignore Cmake'd files
 src/helpers/RootDir.h

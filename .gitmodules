@@ -1,3 +1,7 @@
 [submodule "data/game-models"]
 	path = data/game-models
 	url = https://git.warwicknew.xyz/game-models/
+[submodule "deps/FastNoise2"]
+	path = deps/FastNoise2
+	url = https://github.com/Auburn/FastNoise2.git
+	branch = 1001d76

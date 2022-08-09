@@ -19,16 +19,23 @@ link_directories(${CMAKE_SOURCE_DIR}/lib)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
 
+# Generic OpenGL and windowing libraries.
 find_package(SDL2 REQUIRED)
 find_package(SDL2_image REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(GLEW REQUIRED)
 find_package(GLM REQUIRED)
-find_package(assimp REQUIRED)
 
+# Model loading
+find_package(assimp REQUIRED)
 if (assimp_VERSION VERSION_LESS "5.1")
     message(FATAL_ERROR "Assimp ${assimp_VERSION} out of date, Assimp 5.1.0 or newer is required!")
 endif()
+
+# Build FastNoise2 Library
+set(FASTNOISE2_NOISETOOL ON CACHE BOOL "Build Noise Tool" FORCE)
+set(BUILD_SHARED_LIBS ON CACHE BOOL "Build Noise Tool Dynamic Library" FORCE)
+add_subdirectory(deps/FastNoise2)
 
 include_directories(
     ${SDL2_INCLUDE_DIRS}
@@ -39,9 +46,10 @@ include_directories(
 
 add_executable(${PROJECT_NAME} ${HEADER_FILES} ${SOURCE_FILES})
 
-target_link_libraries(${PROJECT_NAME}
+target_link_libraries(${PROJECT_NAME} PRIVATE
     ${SDL2_LIBRARIES}
     ${SDL2_IMAGE_LIBRARIES}
     ${OPENGL_LIBRARIES}
     ${GLEW_LIBRARIES}
-    ${ASSIMP_LIBRARIES})
+    ${ASSIMP_LIBRARIES}
+    FastNoise)
