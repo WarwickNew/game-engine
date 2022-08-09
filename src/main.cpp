@@ -12,6 +12,7 @@
 // Objects
 #include "Mesh.h"
 #include "Model.h"
+#include "Terrain.h"
 
 // Include error class
 #include "Error.h"
@@ -94,6 +95,9 @@ int main(int argc, char **argv) {
   glEnable(GL_CULL_FACE);
   // glCullFace(GL_FRONT);
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+
+  // Initialise terrain.
+  Terrain terrain = Terrain();
 
   // Game loop
   bool running = true;
