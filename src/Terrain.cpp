@@ -1,21 +1,15 @@
 #include "Terrain.h"
 
 Terrain::Terrain() {
-  // Create location to store noise values.
-  std::vector<float> noiseOutput(16 * 16 * 16);
+  TerrainInfo ti;
+  ti.xRange[0] = 0;
+  ti.xRange[1] = 16;
+  ti.yRange[0] = 0;
+  ti.yRange[1] = 16;
+  ti.zRange[0] = 0;
+  ti.zRange[1] = 16;
+  ti.frequency = 0.2f;
+  ti.seed = 0;
 
-  // Generate noise to the outputs dimentions
-  this->fnGenerator->GenUniformGrid3D(noiseOutput.data(), 0, 0, 0, 16, 16, 16,
-                                      0.2f, 0);
-
-  int index = 0;
-  for (int z = 0; z < 16; z++) {
-    for (int y = 0; y < 16; y++) {
-      for (int x = 0; x < 16; x++) {
-        error.log(std::to_string(x) + " " + std::to_string(y) + " " +
-                  std::to_string(z) + ": " +
-                  std::to_string(noiseOutput[index++]));
-      }
-    }
-  }
+  chunks.push_back(Chunk(fnGenerator, ti));
 }
