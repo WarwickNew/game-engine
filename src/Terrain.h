@@ -1,6 +1,10 @@
 #pragma once
 #include "Chunk.h"
 #include "Error.h"
+#include "MarchingCubeChunkRenderer.h"
+#include "Model.h"
+#include "ShaderLoader.h"
+#include "helpers/RootDir.h"
 #include <FastNoise/FastNoise.h>
 #include <vector>
 
@@ -15,6 +19,12 @@ private:
   // Currently used chunks
   std::vector<Chunk> chunks;
 
+  MarchingCubeChunkRenderer *renderer;
+
 public:
   Terrain();
+
+  void draw(ShaderLoader &shader);
+
+  ~Terrain();
 };

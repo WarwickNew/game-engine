@@ -15,9 +15,18 @@ class Chunk {
 private:
   Error error = Error("Chunk");
 
-  // Favourite noise generated values using the NoiseTool for now:
+  // Pointer to the noise generator that generated this chunk
   FastNoise::SmartNode<> *fnGenerator;
+
+  // Values that initialised the chunk
+  TerrainInfo terrainInfo;
+
+  // 3D vector of noise values
+  std::vector<std::vector<std::vector<float>>> noise;
 
 public:
   Chunk(FastNoise::SmartNode<> &noiseGenerator, TerrainInfo ti);
+
+  float getNoise(int x, int y, int z);
+  TerrainInfo getTerrainInfo();
 };
