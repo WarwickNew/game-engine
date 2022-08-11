@@ -19,6 +19,8 @@ private:
   // Currently used chunks
   std::vector<Chunk> chunks;
 
+  std::vector<Model *> models;
+
   MarchingCubeChunkRenderer *renderer;
 
 public:

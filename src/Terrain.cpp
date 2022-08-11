@@ -15,8 +15,8 @@ Terrain::Terrain() : renderer(nullptr) {
   chunks.push_back(Chunk(fnGenerator, ti));
 
   // Create chunks renderer.
-  std::vector<Model> models = {
-      Model(ROOT_DIR "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj")};
+  models = {new Model(
+      ROOT_DIR "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj")};
 
   renderer = new MarchingCubeChunkRenderer(this->chunks, models);
 }
@@ -26,6 +26,11 @@ Terrain::~Terrain() {
   // nullptr before being updated to the created object, which means it's
   // lifecycle needs to be managed by this class.
   delete renderer;
+  // Creating models here for OPENGL purposes means that we can't duplicate the
+  // data, so we need to delete them after creating them as pointers.
+  for (int i = 0; i < models.size(); i++) {
+    delete models.at(i);
+  }
 }
 
 void Terrain::draw(ShaderLoader &shader) {

@@ -78,10 +78,10 @@ int main(int argc, char **argv) {
   //             std::string("data/models/backpack/backpack.obj"));
   // Model cube(ROOT_DIR "data/models/cube/cube.obj");
   // Model gun(ROOT_DIR "data/models/gun/Cerberus_LP.FBX");
-  Model boxbarrel(ROOT_DIR
-                  "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj");
+  // Model boxbarrel(ROOT_DIR
+  //               "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj");
   // boxbarrel.translate(glm::vec3(0.0f, -1.0f, 0.0f));
-  boxbarrel.setPosition(glm::vec3(0.0f, -1.0f, 0.0f));
+  // boxbarrel.setPosition(glm::vec3(0.0f, -1.0f, 0.0f));
   // cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
   // backpack.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
   // gun.translate(glm::vec3(0.0f, 1.0f, 0.0f));
@@ -131,14 +131,16 @@ int main(int argc, char **argv) {
     shader.setMat4("MVP", camera.getMVP());
 
     shader.setVec3("CameraPos", camera.getCameraPosition());
-    shader.setInt("tick", SDL_GetTicks());
+    // shader.setInt("tick", SDL_GetTicks());
     // boxbarrel.rotate(0.001, glm::vec3(0, 1, 0));
+
+    terrain.draw(shader);
 
     // Draw Meshes
     // cube.draw(shader);
     // backpack.draw(shader);
     // gun.draw(shader);
-    boxbarrel.draw(shader);
+    // boxbarrel.draw(shader);
     // Finally render everything
     shader.use();
 

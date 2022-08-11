@@ -26,6 +26,7 @@ void main()
    data_out.texCoord = aTexCoord;
    data_out.camProj = MVP;
    data_out.modelProj = Model;
-   data_out.lightPos = vec3( (sin(tick / 1000.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
+   //data_out.lightPos = vec3( (sin(tick / 1000.0)*2),  1 + sin(tick / 600.0)*2, 2.0);
+   data_out.lightPos = CameraPos;
    data_out.camPos = CameraPos;
 };
