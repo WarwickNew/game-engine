@@ -37,6 +37,9 @@ private:
                                             aiTextureType type,
                                             std::string typeName);
 
+  // Reset the models position to 0,0,0,
+  void setPositionToOrigin();
+
   void unloadTextures();
 
   std::string directory;
@@ -60,6 +63,8 @@ public:
   void resize(glm::vec3 scale);
   // Scale the model
   void rotate(float angle, glm::vec3 axis);
+  // Set the postion of the model to a set of coordinates
+  void setPosition(glm::vec3 position);
 
   ~Model();
 };

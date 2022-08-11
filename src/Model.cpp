@@ -198,4 +198,13 @@ void Model::unloadTextures() {
   }
 }
 
+void Model::setPositionToOrigin() {
+  this->translate(this->position * -1.0f);
+  this->position = glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
+}
+
+void Model::setPosition(glm::vec3 position) {
+  this->setPositionToOrigin();
+  this->translate(position);
+}
 Model::~Model() { this->unloadTextures(); }
