@@ -15,8 +15,8 @@ Terrain::Terrain() : renderer(nullptr) {
   chunks.push_back(Chunk(fnGenerator, ti));
 
   // Create chunks renderer.
-  models = {new Model(
-      ROOT_DIR "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj")};
+  models = {new Model(ROOT_DIR "data/game-models/12/MetalFloor.obj")};
+  models.at(0)->resize(glm::vec3(0.1f, 0.1f, 0.1f));
 
   renderer = new MarchingCubeChunkRenderer(this->chunks, models);
 }
