@@ -22,9 +22,6 @@ Chunk::Chunk(FastNoise::SmartNode<> &noiseGenerator, TerrainInfo ti) {
   for (int z = 0; z < ti.zRange[1] - ti.zRange[0]; z++) {
     for (int y = 0; y < ti.yRange[1] - ti.yRange[0]; y++) {
       for (int x = 0; x < ti.xRange[1] - ti.xRange[0]; x++) {
-        error.log(std::to_string(x) + " " + std::to_string(y) + " " +
-                  std::to_string(z) + ": " +
-                  std::to_string(noiseOutput[index]));
         xArray.push_back(noiseOutput[index++]);
       }
       yArray.push_back(xArray);

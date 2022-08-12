@@ -18,19 +18,22 @@ void Model::translate(glm::vec3 translation) {
   glm::vec3 position = trans * this->position;
 
   // set model transform
-  this->model = glm::translate(glm::mat4(1.0f), glm::vec3(position));
+  this->model = trans * this->model;
 
   // set position based on the current model
   this->position = model * glm::vec4(0.0f, 0.0f, 0.0f, 1.0f);
 }
 void Model::resize(glm::vec3 scale) {
-  // set worldspace postition
-  glm::mat4 transMatrix =
-      glm::translate(glm::mat4(1.0f), glm::vec3(this->position));
-  this->scale = scale;
+  // Store objects position.
+  glm::vec3 pos = this->position;
+  // Reset models position so scale scales the object not it's transformation
+  this->setPositionToOrigin();
+  // Scale the model
+  this->model = glm::scale(this->model, scale);
+  // Return model to position.
+  this->setPosition(pos);
 
-  // set model transform
-  this->model = glm::scale(transMatrix, glm::vec3(this->scale));
+  this->scale = scale;
 }
 void Model::rotate(float angle, glm::vec3 axis) {
   this->model = glm::rotate(this->model, angle, axis);
