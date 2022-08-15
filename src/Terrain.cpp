@@ -14,19 +14,38 @@ Terrain::Terrain() : renderer(nullptr) {
 
   chunks.push_back(Chunk(fnGenerator, ti));
 
-  // Create chunks renderer.
-  models = {new Model(ROOT_DIR "data/game-models/12/MetalFloor.obj")};
-  models.at(0)->resize(glm::vec3(0.5f));
+  // Create models for chunk renderer to use.
+  models = {
+      new Model(ROOT_DIR "data/game-models/1/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/2/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/3/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/4/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/5/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/6/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/7/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/8/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/9/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/10/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/11/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/12/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/13/MetalFloor.obj"),
+      new Model(ROOT_DIR "data/game-models/14/MetalFloor.obj"),
+  };
+  // Resize models to fit in coordinate system.
+  for (int i = 0; i < models.size(); i++) {
+    models.at(i)->resize(glm::vec3(0.5f));
+  }
 
+  // Create chunk renderer.
   renderer = new MarchingCubeChunkRenderer(this->chunks, models);
 }
 
 Terrain::~Terrain() {
-  // Since we created our renderer member in our constructer it has to be a
-  // nullptr before being updated to the created object, which means it's
-  // lifecycle needs to be managed by this class.
+  // Since we created our renderer member in our constructer and defined it in
+  // the header file it has to be a nullptr before being updated to the created
+  // object, which means it's lifecycle needs to be managed by this class.
   delete renderer;
-  // Creating models here for OPENGL purposes means that we can't duplicate the
+  // Creating models here for OpenGL purposes means that we can't duplicate the
   // data, so we need to delete them after creating them as pointers.
   for (int i = 0; i < models.size(); i++) {
     delete models.at(i);

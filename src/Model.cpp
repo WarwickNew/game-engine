@@ -33,7 +33,7 @@ void Model::resize(glm::vec3 scale) {
   // Return model to position.
   this->setPosition(pos);
 
-  this->scale = scale;
+  this->scale = this->scale * scale;
 }
 void Model::rotate(float angle, glm::vec3 axis) {
   this->model = glm::rotate(this->model, angle, axis);
