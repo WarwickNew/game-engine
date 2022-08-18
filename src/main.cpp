@@ -74,20 +74,6 @@ int main(int argc, char **argv) {
                       ROOT_DIR "data/shaders/fragment.glsl",
                       ROOT_DIR "data/shaders/geometry.glsl");
 
-  // Model backpack(std::string(ROOT_DIR) +
-  //             std::string("data/models/backpack/backpack.obj"));
-  // Model cube(ROOT_DIR "data/models/cube/cube.obj");
-  // Model gun(ROOT_DIR "data/models/gun/Cerberus_LP.FBX");
-  // Model boxbarrel(ROOT_DIR
-  //               "data/models/wooden_boxbarrel/wooden_box_and_barrel.obj");
-  // boxbarrel.translate(glm::vec3(0.0f, -1.0f, 0.0f));
-  // boxbarrel.setPosition(glm::vec3(0.0f, -1.0f, 0.0f));
-  // cube.translate(glm::vec3(3.0f, 0.0f, -1.0f));
-  // backpack.translate(glm::vec3(-3.0f, 0.0f, 0.0f));
-  // gun.translate(glm::vec3(0.0f, 1.0f, 0.0f));
-  // gun.resize(glm::vec3(0.02f, 0.02f, 0.02f));
-  // gun.rotate(glm::radians(-90.0f), glm::vec3(0.0f, 1.0f, 0.0f));
-
   // Create player camera object
   PlayerCamera camera;
 
@@ -99,6 +85,13 @@ int main(int argc, char **argv) {
 
   // Initialise terrain.
   Terrain terrain = Terrain();
+
+  // Debug MC table
+  Model debugSphere =
+      Model(ROOT_DIR "data/game-models/DebugSphere/DebugSphere.obj");
+  debugSphere.resize(glm::vec3(0.1f));
+  bool index[8] = {true, true, true, true, true, true, true, true};
+  Model debugMCsegment = Model(ROOT_DIR "data/game-models/1/MetalFloor.obj");
 
   // Game loop
   bool running = true;
@@ -124,24 +117,51 @@ int main(int argc, char **argv) {
 
     // Clear screen ready for next loop
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-    // Make every shader/rendering call from this point on use our shader
-    // glUseProgram(shaderProgram);
 
     // Send our glsl shader our camera information
     shader.setMat4("MVP", camera.getMVP());
 
     shader.setVec3("CameraPos", camera.getCameraPosition());
-    // shader.setInt("tick", SDL_GetTicks());
-    // boxbarrel.rotate(0.001, glm::vec3(0, 1, 0));
 
     terrain.draw(shader);
 
-    // Draw Meshes
-    // cube.draw(shader);
-    // backpack.draw(shader);
-    // gun.draw(shader);
-    // boxbarrel.draw(shader);
-    // Finally render everything
+    // draw debug sphere at correct config
+    debugMCsegment.draw(shader);
+    debugSphere.setPosition(glm::vec3(0));
+    debugSphere.draw(shader);
+    if (index[0] == true) {
+      debugSphere.setPosition(glm::vec3(-1, -1, -1));
+      debugSphere.draw(shader);
+    }
+    if (index[1] == true) {
+      debugSphere.setPosition(glm::vec3(1, -1, -1));
+      debugSphere.draw(shader);
+    }
+    if (index[2] == true) {
+      debugSphere.setPosition(glm::vec3(1, 1, -1));
+      debugSphere.draw(shader);
+    }
+    if (index[3] == true) {
+      debugSphere.setPosition(glm::vec3(-1, 1, -1));
+      debugSphere.draw(shader);
+    }
+    if (index[4] == true) {
+      debugSphere.setPosition(glm::vec3(-1, -1, 1));
+      debugSphere.draw(shader);
+    }
+    if (index[5] == true) {
+      debugSphere.setPosition(glm::vec3(1, -1, 1));
+      debugSphere.draw(shader);
+    }
+    if (index[6] == true) {
+      debugSphere.setPosition(glm::vec3(1, 1, 1));
+      debugSphere.draw(shader);
+    }
+    if (index[7] == true) {
+      debugSphere.setPosition(glm::vec3(-1, 1, 1));
+      debugSphere.draw(shader);
+    }
+
     shader.use();
 
     SDL_GL_SwapWindow(window);

@@ -18,7 +18,7 @@ void MarchingCubeChunkRenderer::draw(ShaderLoader &shader) {
       for (int y = ti.yRange[0]; y < ti.yRange[1]; y++) {
         for (int z = ti.zRange[0]; z < ti.zRange[1]; z++) {
           if (chunk->getNoise(x, y, z) > 0.2f) {
-            this->genCubeModel(x, y, z, *chunk);
+            // this->genCubeModel(x, y, z, *chunk);
             models.at(0)->setPosition(glm::vec3(x, y, z));
             models.at(0)->draw(shader);
           }

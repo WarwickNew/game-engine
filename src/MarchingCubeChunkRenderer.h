@@ -3,7 +3,14 @@
 #include "Error.h"
 #include "Model.h"
 #include <glm/glm.hpp>
+#include <map>
 #include <vector>
+
+// data required for rendring cube in right orientation.
+struct CubeData {
+  glm::mat4 transform;
+  int modelID;
+};
 
 class MarchingCubeChunkRenderer {
 
@@ -20,6 +27,10 @@ private:
   // cubes algorithm plus maybe more if models become orientation specific:
   // https://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.545.613
   std::vector<Model *> models;
+
+  // this map will contain all combinations of cube data in order to render the
+  // right model with the right translations
+  std::map<int, CubeData> RenderMap;
 
   // Determine Cubes Model and translation.
   Model *genCubeModel(int x, int y, int z, Chunk &chunk);
