@@ -30,7 +30,7 @@ private:
 
   // this map will contain all combinations of cube data in order to render the
   // right model with the right translations
-  std::map<int, CubeData> RenderMap;
+  const static std::map<int, CubeData> RenderMap;
 
   // Determine Cubes Model and translation.
   Model *genCubeModel(int x, int y, int z, Chunk &chunk);
