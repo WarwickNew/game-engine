@@ -8,6 +8,8 @@
 #include <assimp/scene.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtx/euler_angles.hpp>
+#include <glm/gtx/string_cast.hpp>
 #include <string>
 #include <vector>
 
@@ -63,8 +65,11 @@ public:
   void resize(glm::vec3 scale);
   // Scale the model
   void rotate(float angle, glm::vec3 axis);
+  void worldRotate(float angle, glm::vec3 axis);
   // Set the postion of the model to a set of coordinates
   void setPosition(glm::vec3 position);
+
+  void printModel() { error.log(glm::to_string(model)); }
 
   ~Model();
 };
