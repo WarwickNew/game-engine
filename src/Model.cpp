@@ -36,7 +36,14 @@ void Model::resize(glm::vec3 scale) {
   this->scale = this->scale * scale;
 }
 void Model::rotate(float angle, glm::vec3 axis) {
-  this->model = glm::rotate(this->model, angle, axis);
+  this->model = glm::rotate(this->model, glm::radians(angle), axis);
+}
+void Model::worldRotate(float angle, glm::vec3 axis) {
+  // create world space rotation matrix
+  glm::mat4 rotate = glm::mat4(1.0f);
+  rotate = glm::rotate(rotate, glm::radians(angle), axis);
+  // Swapping the multiplication would apply this to model space also
+  this->model = rotate * this->model;
 }
 
 void Model::loadModel(std::string path) {

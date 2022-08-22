@@ -84,15 +84,22 @@ int main(int argc, char **argv) {
   glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 
   // Initialise terrain.
-  Terrain terrain = Terrain();
+  // Terrain terrain = Terrain();
 
   // Debug MC table
   Model debugSphere =
       Model(ROOT_DIR "data/game-models/DebugSphere/DebugSphere.obj");
   debugSphere.resize(glm::vec3(0.1f));
-  bool index[8] = {true, true, true, true, true, true, true, true};
-  Model debugMCsegment = Model(ROOT_DIR "data/game-models/1/MetalFloor.obj");
+  bool index[8] = {false, false, false, false, true, false, true, false};
+  // bool index[8] = {true, true, true, true, true, true, true, true};
+  Model debugMCsegment = Model(ROOT_DIR "data/game-models/3/MetalFloor.obj");
 
+  // debugMCsegment.worldRotate(180.0f, glm::vec3(1, 0, 1));
+  // debugMCsegment.worldRotate(-90.0f, glm::vec3(0, 1, 0));
+  // debugMCsegment.worldRotate(90.0f, glm::vec3(1, 0, 0));
+  debugMCsegment.worldRotate(-90.0f, glm::vec3(0, 1, 0));
+
+  debugMCsegment.printModel();
   // Game loop
   bool running = true;
   while (running) {
@@ -123,7 +130,7 @@ int main(int argc, char **argv) {
 
     shader.setVec3("CameraPos", camera.getCameraPosition());
 
-    terrain.draw(shader);
+    // terrain.draw(shader);
 
     // draw debug sphere at correct config
     debugMCsegment.draw(shader);
