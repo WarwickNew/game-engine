@@ -90,14 +90,22 @@ int main(int argc, char **argv) {
   Model debugSphere =
       Model(ROOT_DIR "data/game-models/DebugSphere/DebugSphere.obj");
   debugSphere.resize(glm::vec3(0.1f));
-  bool index[8] = {false, false, false, false, true, false, true, false};
+  bool index[8] = {false, false, false, true, false, true, true, true};
   // bool index[8] = {true, true, true, true, true, true, true, true};
-  Model debugMCsegment = Model(ROOT_DIR "data/game-models/3/MetalFloor.obj");
+  Model debugMCsegment = Model(ROOT_DIR "data/game-models/14/MetalFloor.obj");
 
   // debugMCsegment.worldRotate(180.0f, glm::vec3(1, 0, 1));
+  // debugMCsegment.worldRotate(180.0f, glm::vec3(0, 1, 0));
+  debugMCsegment.worldRotate(90.0f, glm::vec3(0, 1, 0));
+  // debugMCsegment.worldRotate(180.0f, glm::vec3(0, 0, 1));
+  // debugMCsegment.worldRotate(180.0f, glm::vec3(0, 0, 1));
+  // debugMCsegment.worldRotate(180.0f, glm::vec3(0, 1, 0));
+  // debugMCsegment.worldRotate(180.0f, glm::vec3(1, 0, 0));
+  // debugMCsegment.worldRotate(-90.0f, glm::vec3(0, 0, 1));
   // debugMCsegment.worldRotate(-90.0f, glm::vec3(0, 1, 0));
-  // debugMCsegment.worldRotate(90.0f, glm::vec3(1, 0, 0));
-  debugMCsegment.worldRotate(-90.0f, glm::vec3(0, 1, 0));
+  // debugMCsegment.worldRotate(90.0f, glm::vec3(0, 0, 1));
+  // debugMCsegment.worldRotate(180.0f, glm::vec3(1, 0, 0));
+  // debugMCsegment.worldRotate(-90.0f, glm::vec3(0, 1, 0));
 
   debugMCsegment.printModel();
   // Game loop
