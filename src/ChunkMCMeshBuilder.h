@@ -10,6 +10,11 @@ private:
 
   Mesh *chunkTerrain;
 
+  // Marching Cube data from:
+  // http://paulbourke.net/geometry/polygonise/
+  static const int edgeTable[256];
+  static const int triTable[256][16];
+
 public:
   ChunkMCMeshBuilder();
   ~ChunkMCMeshBuilder();
