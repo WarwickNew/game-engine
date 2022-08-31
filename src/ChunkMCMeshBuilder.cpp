@@ -1,16 +1,96 @@
 #include "ChunkMCMeshBuilder.h"
 
-ChunkMCMeshBuilder::ChunkMCMeshBuilder() : chunkTerrain(nullptr) {
+ChunkMCMeshBuilder::ChunkMCMeshBuilder(Chunk &chunk) : chunkTerrain(nullptr) {
   // Data to create the Mesh
   std::vector<Vertex> vertices;
   std::vector<unsigned int> indices;
   std::vector<Texture> textures;
+  this->chunk = &chunk;
 
   // TODO: Build/load Mesh data here, it's better practice to place this in a
   // function but fuck it.
 
   // Create the Mesh
   this->chunkTerrain = new Mesh(vertices, indices, textures);
+}
+
+void ChunkMCMeshBuilder::generateMesh(){
+  TerrainInfo chunkInfo = this->chunk->getTerrainInfo();
+
+}
+void ChunkMCMeshBuilder::polygonise(gridCube cube, float noiseCutoff){
+  int tableIndex = 0;
+
+  // Determine table index
+  if (cube.nVal[0] < noiseCutoff) tableIndex |= 1;
+  if (cube.nVal[1] < noiseCutoff) tableIndex |= 2;
+  if (cube.nVal[2] < noiseCutoff) tableIndex |= 4;
+  if (cube.nVal[3] < noiseCutoff) tableIndex |= 8;
+  if (cube.nVal[4] < noiseCutoff) tableIndex |= 16;
+  if (cube.nVal[5] < noiseCutoff) tableIndex |= 32;
+  if (cube.nVal[6] < noiseCutoff) tableIndex |= 64;
+  if (cube.nVal[7] < noiseCutoff) tableIndex |= 128;
+
+  // Don't do anything if the cube doesn't have an edge
+  if (edgeTable[tableIndex] == 0) return;
+
+  // Find verticeise where the surface intersects the cube
+  glm::vec3 vertList[12];
+  if (edgeTable[tableIndex] & 1)
+    vertList[0] =
+      vertexInterp(noiseCutoff, cube.vert[0],cube.vert[1],cube.nVal[0],cube.nVal[1]);
+  if (edgeTable[tableIndex] & 2)
+    vertList[1] =
+      vertexInterp(noiseCutoff, cube.vert[1],cube.vert[2],cube.nVal[1],cube.nVal[2]);
+  if (edgeTable[tableIndex] & 4)
+    vertList[2] =
+      vertexInterp(noiseCutoff, cube.vert[2],cube.vert[3],cube.nVal[2],cube.nVal[3]);
+  if (edgeTable[tableIndex] & 8)
+    vertList[3] =
+      vertexInterp(noiseCutoff, cube.vert[3],cube.vert[4],cube.nVal[3],cube.nVal[4]);
+  if (edgeTable[tableIndex] & 16)
+    vertList[4] =
+      vertexInterp(noiseCutoff, cube.vert[4],cube.vert[5],cube.nVal[4],cube.nVal[5]);
+  if (edgeTable[tableIndex] & 32)
+    vertList[5] =
+      vertexInterp(noiseCutoff, cube.vert[5],cube.vert[6],cube.nVal[5],cube.nVal[6]);
+  if (edgeTable[tableIndex] & 64)
+    vertList[6] =
+      vertexInterp(noiseCutoff, cube.vert[6],cube.vert[7],cube.nVal[6],cube.nVal[7]);
+  if (edgeTable[tableIndex] & 128)
+    vertList[7] =
+      vertexInterp(noiseCutoff, cube.vert[7],cube.vert[4],cube.nVal[7],cube.nVal[4]);
+  if (edgeTable[tableIndex] & 256)
+    vertList[8] =
+      vertexInterp(noiseCutoff, cube.vert[0],cube.vert[4],cube.nVal[0],cube.nVal[4]);
+  if (edgeTable[tableIndex] & 512)
+    vertList[9] =
+      vertexInterp(noiseCutoff, cube.vert[1],cube.vert[5],cube.nVal[1],cube.nVal[5]);
+  if (edgeTable[tableIndex] & 1024)
+    vertList[10] =
+      vertexInterp(noiseCutoff, cube.vert[2],cube.vert[6],cube.nVal[2],cube.nVal[6]);
+  if (edgeTable[tableIndex] & 2048)
+    vertList[11] =
+      vertexInterp(noiseCutoff, cube.vert[3],cube.vert[7],cube.nVal[3],cube.nVal[7]);
+
+  // Create and store triangles
+  for (int i = 0; triTable[tableIndex][i]!=-1;i+=3){
+    triangle tri;
+    tri.verticie[0] = vertList[triTable[tableIndex][i]];
+    tri.verticie[1] = vertList[triTable[tableIndex][i + 1]];
+    tri.verticie[2] = vertList[triTable[tableIndex][i + 2]];
+    triangles.push_back(tri);
+  }
+
+}
+
+glm::vec3 ChunkMCMeshBuilder::vertexInterp(
+    float noiseCutoff, glm::vec3 p1, glm::vec3 p2, float n1, float n2){
+  //TODO Make this take noise values into account so the mid point conforms to
+  //the noise more closely
+
+  //Return mid point of the two values
+  return (p1 + p2) / glm::vec3(2.0f);
 }
 
 ChunkMCMeshBuilder::~ChunkMCMeshBuilder() { delete this->chunkTerrain; }
@@ -42,6 +122,7 @@ const int ChunkMCMeshBuilder::edgeTable[256] = {
     0x99c, 0x69c, 0x795, 0x49f, 0x596, 0x29a, 0x393, 0x99,  0x190, 0xf00, 0xe09,
     0xd03, 0xc0a, 0xb06, 0xa0f, 0x905, 0x80c, 0x70c, 0x605, 0x50f, 0x406, 0x30a,
     0x203, 0x109, 0x0};
+
 const int ChunkMCMeshBuilder::triTable[256][16] = {
   {-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
   {0, 8, 3, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1},
