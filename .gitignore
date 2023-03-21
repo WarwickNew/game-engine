@@ -4,10 +4,13 @@
 CMakeCache.txt
 CMakeFiles/
 bin/
+Game
 lib/
 Makefile
 cmake_install.cmake
 compile_commands.json
+# ignore CPM package manager file
+cmake/CPM*.cmake
 # FastNoise2 extra build files
 CPM_modules/
 NoiseTool.ini
